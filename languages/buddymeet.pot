@@ -1,0 +1,183 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: BuddyMeet\n"
+"POT-Creation-Date: 2020-01-17 16:25+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Themis Dakanalis <tdakanalis@cytech.gr>\n"
+"Language-Team: Cytech\n"
+"Report-Msgid-Bugs-To:  Themis Dakanalis <tdakanalis@cytech.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Textdomain-Support: yesX-Generator: Poedit 1.6.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"Language: en_US\n"
+"X-Generator: Poedit 2.2.4\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: buddymeet.php:277
+#, php-format
+msgid "BuddyMeet requires at least version %s of BuddyPress."
+msgstr ""
+
+#: buddymeet.php:278
+#, php-format
+msgid "Upgrade BuddyPress to at least version %s"
+msgstr ""
+
+#: buddymeet.php:288
+msgid "BuddyMeet requires to be activated on the blog where BuddyPress is activated."
+msgstr ""
+
+#: buddymeet.php:289
+msgid "Activate BuddyMeet on the same blog than BuddyPress"
+msgstr ""
+
+#: buddymeet.php:293
+msgid "BuddyMeet and BuddyPress need to share the same network configuration."
+msgstr ""
+
+#: buddymeet.php:294
+msgid "Make sure BuddyMeet is activated at the same level than BuddyPress on the network"
+msgstr ""
+
+#: buddymeet.php:301
+msgid "deactivate"
+msgstr ""
+
+#: buddymeet.php:302
+#, php-format
+msgid "You should %s BuddyMeet"
+msgstr ""
+
+#: buddymeet.php:309
+msgid "Once done try to activate BuddyMeet again."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:99
+msgid "Settings saved successfully"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:121
+msgid "This content is only available to group members."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:132
+msgid "BuddyMeet Settings"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:135
+msgid "Allow members of this group to enter the same video conference room."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:163
+msgid "Activate"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:168
+msgid "Domain"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:170
+msgid "The domain the Jitsi Meet server runs. Defaults to their free hosted service."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:174
+msgid "Room"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:176
+msgid "Set the room group members will enter automatically when visiting the buddymeet menu."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:180
+msgid "Password"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:182
+msgid "Set the password the group members will have to enter to join the room. The first to visit - and therefore create - the room will enter without any password. The rest participants will have to fill-in the password."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:186
+msgid "Toolbar"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:188
+msgid "The toolbar buttons to get displayed in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49\">TOOLBAR_BUTTONS</a>."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:192
+msgid "Settings"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:194
+msgid "The settings to be available in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57\">SETTINGS_SECTIONS</a>."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:199
+msgid "Width"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:201
+msgid "The width in pixels or percentage of the embedded window."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:205
+msgid "Height"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:207
+msgid "The height in pixels or percentage of the embedded window."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:211
+msgid "Background Color"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:213
+msgid "The background color of the window when camera is off."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:217
+msgid "Default Language"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:219
+msgid "The default language."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:224
+msgid "Show Watermark"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:226
+msgid "Show/Hide the Jitsi Meet watermark. Please leave it checked unless you use your own domain."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:231
+msgid "Film Strip Mode Only"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:233
+msgid "Display the window in film strip only mode."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:238
+msgid "Start Audio Only"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:240
+msgid "Every participant enters the room having enabled only their microphone. Camera is off."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:246
+msgid "Disable Video Quality Indicator"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:248
+msgid "Hide/Show the video quality indicator."
+msgstr ""
