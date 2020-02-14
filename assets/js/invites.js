@@ -1,5 +1,6 @@
 jQuery(document).ready( function() {
-	let initializeMeet = true;
+	const room = jQuery('#room').val();
+	let initializeMeet = room === '' || room === undefined;
 	const group_id = jQuery("input#group_id").val();
 
 	autocomplete(jQuery('#room').val());
@@ -7,6 +8,7 @@ jQuery(document).ready( function() {
 	jQuery('#send-invite-form #stopCall').on( 'click', function(e) {
 		const data = {
 			'action' : 'members_delete_room',
+			'room' :  jQuery('#room').val(),
 			'_wpnonce': jQuery("input#_wpnonce_members_delete_room").val(),
 		};
 
@@ -14,13 +16,11 @@ jQuery(document).ready( function() {
 			type: "POST",
 			url: ajaxurl,
 			data: data,
-			success: function(data){
-				jQuery('#room').val('');
-				api.dispose();
-				window.api = undefined;
-				initializeMeet = true;
-				autocomplete(null);
-				buddymeet_refresh_buttons_state();
+			success: function(response){
+				const url = JSON.parse(response);
+				if(url.redirect) {
+					window.location = url.redirect;
+				}
 			},
 			error: function(data){
 			}
@@ -42,7 +42,7 @@ jQuery(document).ready( function() {
 		const data = {
 			'action' : 'members_send_invites',
 			'users': users,
-			'subject': jQuery('#subject').val(),
+			'room_name': jQuery('#room_name').val(),
 			'room': jQuery('#room').val(),
 			'initialize': initializeMeet,
 			'_wpnonce': jQuery("input#_wpnonce_send_invites").val(),
@@ -52,9 +52,12 @@ jQuery(document).ready( function() {
 			type: "POST",
 			url: ajaxurl,
 			data: data,
-			success: function(data){
-				if(data) {
-					jQuery('#meet-wrapper').html(data);
+			success: function(response){
+				if(response) {
+					const url = JSON.parse(response);
+					if(url.redirect){
+						window.location = url.redirect;
+					}
 				}
 				jQuery('#meet-invite-list').find('li').remove();
 
@@ -71,11 +74,19 @@ jQuery(document).ready( function() {
 
 	});
 
-	const room = jQuery('#room').val();
-	if(room){
-		jQuery('#submit').trigger('click');
-		initializeMeet = false;
-	}
+	jQuery('#active-rooms').on( 'change', function(e) {
+		const room =  jQuery('#active-rooms').val();
+		let location = window.location.href;
+		location = location.substr(0, location.indexOf('buddymeet/')) + 'buddymeet/members/';
+		window.location = location + room;
+
+		e.preventDefault();
+	});
+
+
+	jQuery('#room_name').on( 'keyup', function(e) {
+		buddymeet_refresh_buttons_state();
+	});
 
 	buddymeet_refresh_buttons_state();
 
@@ -129,8 +140,10 @@ jQuery(document).ready( function() {
 
 	function buddymeet_refresh_buttons_state(){
 
-		const invites = jQuery( '#meet-invite-list li' ).length;
-		if ( invites ) {
+		const hasInvites = jQuery( '#meet-invite-list li' ).length;
+		const roomName = jQuery( '#room_name' ).val();
+		const hasRoomName = roomName !== '' && roomName !== undefined;
+		if ( hasInvites  && hasRoomName) {
 			jQuery( '#submit' ).prop( 'disabled', false ).removeClass( 'submit-disabled' );
 		} else {
 			jQuery( '#submit' ).prop( 'disabled', true ).addClass( 'submit-disabled' );
@@ -138,8 +151,10 @@ jQuery(document).ready( function() {
 
 		if(typeof(api) != "undefined"){
 			jQuery( '#stopCall' ).prop( 'disabled', false ).removeClass( 'submit-disabled' );
+			jQuery( '#room_name' ).prop( 'disabled', true );
 		} else {
 			jQuery( '#stopCall' ).prop( 'disabled', true ).addClass( 'submit-disabled' );
+			jQuery( '#room_name' ).prop( 'disabled', false );
 		}
 	}
 });

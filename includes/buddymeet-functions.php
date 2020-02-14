@@ -81,7 +81,9 @@ function buddymeet_get_plugin_url() {
 function buddymeet_activation() {
 	// For network, as plugin is not yet activated, bail method won't help..
 	if ( is_network_admin() && function_exists( 'buddypress' ) ) {
-		$check = ! empty( $_REQUEST ) && 'activate' == $_REQUEST['action'] && $_REQUEST['plugin'] == buddymeet()->basename && bp_is_network_activated() && buddymeet::version_check();
+	    $action = isset($_REQUEST['action']) ? sanitize_text_field($_REQUEST['action']) : null;
+	    $plugin = isset($_REQUEST['plugin']) ? sanitize_text_field($_REQUEST['plugin']) : null;
+		$check =  $action === 'activate' && $plugin == buddymeet()->basename && bp_is_network_activated() && buddymeet::version_check();
 	} else {
 		$check = ! buddymeet::bail();
 	}
@@ -162,11 +164,7 @@ function buddymeet_groups_get_groupmeta($group_id, $meta_key, $default){
 }
 
 function buddymeet_groups_update_groupmeta($group_id, $meta_key, $default){
-    $value = sanitize_text_field( $_POST[$meta_key] );
-    if(!$value){
-        $value = $default;
-    }
-
+    $value = isset($_POST[$meta_key]) ? sanitize_text_field($_POST[$meta_key]) : $default;
     groups_update_groupmeta( $group_id, $meta_key, $value );
 }
 
@@ -182,21 +180,24 @@ function buddymeet_get_current_action(){
     return $action;
 }
 
-function buddymeet_get_current_room(){
-    global $wp;
-
+function buddymeet_get_current_user_room(){
     $group_id = bp_get_group_id();
     $user_id = get_current_user_id();
-    $path_params = array_keys($wp->query_vars);
-    $room_option_key = BuddyMeet::OPTION_PREFIX_MEET_ROOM . $user_id;
-
-    if(count($path_params) > 3){
-        $room = $path_params[2];
-        groups_update_groupmeta($group_id, $room_option_key, $room);
-    } else {
-        $room = buddymeet_groups_get_groupmeta($group_id, $room_option_key, '');
+    $room_id = buddymeet_get_current_user_room_from_path();
+    if($room_id){
+        return buddymeet_get_user_room_info($group_id, $user_id, $room_id);
     }
-    return $room;
+    return false;
+}
+
+function buddymeet_get_current_user_room_from_path(){
+    global $wp;
+
+    $path_params = array_keys($wp->query_vars);
+    if(count($path_params) > 3) {
+        return $path_params[2];
+    }
+    return false;
 }
 
 function buddymeet_register_custom_email_templates() {
@@ -251,4 +252,100 @@ function buddymeet_is_enabled($group_id = false){
         $enabled = get_option('_buddymeet_enabled') === "1";
     }
     return $enabled;
+}
+
+function buddymeet_sanitize_request_array($param, $callback){
+    $array = isset( $_REQUEST[$param] ) ? (array) $_REQUEST[$param] : array();
+    return array_map($callback, $array);
+}
+
+
+function buddymeet_get_room_members($room, $group_id, $initialize = true){
+    $room_members = false;
+    if($room !== null) {
+        $room_members_key = BuddyMeet::ROOM_MEMBERS_PREFIX . $room;
+        $room_members = groups_get_groupmeta($group_id, $room_members_key);
+        if (!$room_members && $initialize) {
+            $room_members = array(get_current_user_id());
+            groups_update_groupmeta($group_id, $room_members_key, $room_members);
+        }
+    }
+    return $room_members;
+}
+
+function buddymeet_is_member_of_room($user_id, $room_id, $group_id){
+    $members = buddymeet_get_room_members($room_id, $group_id);
+    return !$members || in_array($user_id, $members);
+}
+
+function buddymeet_get_user_rooms($group_id, $user_id){
+    $user_rooms_option_key = BuddyMeet::USER_ROOMS_PREFIX . $user_id;
+    return groups_get_groupmeta($group_id, $user_rooms_option_key);
+}
+
+function buddymeet_get_user_room_info($group_id, $user_id, $room_id){
+    $rooms = buddymeet_get_user_rooms($group_id, $user_id);
+    foreach($rooms as $room){
+        if($room['id'] === $room_id){
+            return $room;
+        }
+    }
+    return false;
+}
+
+function buddymeet_render_jitsi_meet($room = null, $subject = null){
+    if(!bp_is_group_single()){
+       return;
+    }
+
+    global $bp;
+    $group_id = $bp->groups->current_group->id;
+
+    if(is_null($room)){
+        $room = groups_get_groupmeta( $group_id, 'buddymeet_room', true);
+    }
+
+    if(is_null($subject)){
+        $group_name = esc_js($bp->groups->current_group->name);
+        $subject = $group_name;
+    }
+
+    $user_name = esc_js($bp->loggedin_user->userdata->display_name);
+    $avatar_url = esc_js(bp_get_loggedin_user_avatar( 'html=false' ));
+
+    //apply group settings
+    $password = groups_get_groupmeta( $group_id, 'buddymeet_password', true);
+
+    $domain =  groups_get_groupmeta( $group_id, 'buddymeet_domain', true);
+    $film_strip_only =  groups_get_groupmeta( $group_id, 'buddymeet_film_strip_only', true) === '1' ?  'true' : 'false';
+    $width =  groups_get_groupmeta( $group_id, 'buddymeet_width', true);
+    $height =  groups_get_groupmeta( $group_id, 'buddymeet_height', true);
+    $start_audio_only =  groups_get_groupmeta( $group_id, 'buddymeet_start_audio_only', true) === '1' ? 'true' : 'false';
+    $default_language =  groups_get_groupmeta( $group_id, 'buddymeet_default_language', true);
+    $background_color =  groups_get_groupmeta( $group_id, 'buddymeet_background_color', true);
+    $show_watermark =  groups_get_groupmeta( $group_id, 'buddymeet_show_watermark', true)  === '1' ? 'true' : 'false';
+    $disable_video_quality_label =  groups_get_groupmeta( $group_id, 'buddymeet_disable_video_quality_label', true) === '1' ? 'true' : 'false';
+    $settings =  groups_get_groupmeta( $group_id, 'buddymeet_settings', true);
+    $toolbar =  groups_get_groupmeta( $group_id, 'buddymeet_toolbar', true);
+
+    $content = '[buddymeet 
+            room = "' . $room . '" 
+            subject = "' . $subject . '"
+            user = "' . $user_name . '"
+            avatar = "' . $avatar_url . '"
+            password = "' . $password . '"
+            domain = "' . $domain . '"
+            film_strip_only = "' . $film_strip_only . '"
+            width = "' . $width . '"
+            height = "' . $height . '"
+            start_audio_only = "' . $start_audio_only . '"
+            default_language = "' . $default_language . '"
+            background_color = "' . $background_color . '"
+            show_watermark = "' . $show_watermark . '"
+            disable_video_quality_label = "' . $disable_video_quality_label . '"
+            settings = "' . $settings . '"
+            toolbar = "' . $toolbar . '"
+        ]';
+
+    echo do_shortcode($content);
 }

@@ -57,6 +57,7 @@ Use the support forum of this plugin.
 5. Meet the invited members
 6. Accept a meet invitation
 7. Enter the room you was invited into
+8. Switch among different rooms you have been invited into
 
 == Changelog ==
 

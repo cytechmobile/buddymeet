@@ -168,47 +168,34 @@ class BuddyMeet_Component extends BP_Component {
     public function members_autocomplete() {
         global $bp;
 
-        $group_id = $bp->groups->current_group->id;
-        $search_terms =  $_REQUEST['query'];
-        $room =  $_REQUEST['room'];
-        $fields = 'all';
+        $group_id = absint($bp->groups->current_group->id);
+        $search_terms =  isset($_REQUEST['query']) ? sanitize_text_field($_REQUEST['query']) : null;
+        $room =   isset($_REQUEST['room']) ? sanitize_text_field($_REQUEST['room']) : null;
 
         $args = array(
             'group_id'   => $group_id,
             'group_role' => array( 'member', 'mod', 'admin', 'banned' ),
-            'fields' => ('ID' === $fields) ? 'ID' : 'all'
+            'fields' => 'all'
         );
         if ( $search_terms ) {
             $args['search_terms'] = $search_terms;
         }
 
         $exclude = array(get_current_user_id());
-        $notifications = BP_Notifications_Notification::get( array(
-                'component_name' => buddymeet_get_slug(),
-                'component_action' => 'members_send_invites',
-                'is_new' => true,
-                'meta_query' => array(
-                    array(
-                        'key'   => 'room',
-                        'value' => $room
-                    ),
-                )
-        ) );
-
-        foreach($notifications as $notification){
-            $exclude[] = $notification->user_id;
+        $room_members = groups_get_groupmeta($group_id, BuddyMeet::ROOM_MEMBERS_PREFIX . $room);
+        if($room_members){
+            $exclude = array_unique(array_merge($exclude, $room_members));
         }
-
         $args['exclude'] = $exclude;
-        $group_members = groups_get_group_members( $args );
 
+        $group_members = groups_get_group_members( $args );
         $return = array(
-            'query' 	=> $_REQUEST['query'],
+            'query' 	=> $search_terms,
             'data' 		=> array(),
             'suggestions' 	=> array()
         );
 
-        if($group_members['count'] > 0) {
+        if($group_members && !empty($group_members)) {
             $suggestions = array();
             $data 	     = array();
 
@@ -221,28 +208,30 @@ class BuddyMeet_Component extends BP_Component {
             $return['data']	       = $data;
         }
 
-        die( json_encode( $return ) );
+        die(json_encode( $return ));
     }
 
     public function members_add_to_invite_list() {
         check_ajax_referer( 'buddymeet_members_add_invite' );
 
-        if ( !$_POST['member_id'] || !$_POST['member_action'] || !$_POST['group_id'] ){
+        $member_id = isset($_POST['member_id']) && is_numeric($_POST['member_id']) ? absint($_POST['member_id']) : null;
+        $member_action = isset($_POST['member_action']) ? sanitize_text_field($_POST['member_action']) : null;
+        $group_id = isset($_POST['group_id']) && is_numeric($_POST['group_id']) ? absint($_POST['group_id']) : null;
+
+        if (is_null($member_id)|| is_null($member_action) || is_null($group_id)){
             return false;
         }
 
-        if ( 'add_invite' == $_POST['member_action'] ) {
-            $user = new BP_Core_User( $_POST['member_id'] );
-
-            echo '<li id="uid-' . $user->id . '">';
-            echo bp_core_fetch_avatar( array( 'item_id' => $user->id ) );
-            echo '<h4>' . bp_core_get_userlink( $user->id ) . '</h4>';
-            echo '<span class="activity">' . esc_html( $user->last_active ) . '</span>';
-            echo '<div class="action">
-				<a class="remove" href="#" id="uid-' . esc_html( $user->id ) . '">' . __( 'Remove Invite', 'buddymeet' ) . '</a>
-			  </div>';
-            echo '</li>';
-
+        if ($member_action === 'add_invite') {
+            $user = new BP_Core_User($member_id);
+            echo sprintf(
+                $this->get_invite_list_entry_template(),
+                esc_attr($user->id),
+                bp_core_fetch_avatar(array( 'item_id' => $user->id )),
+                bp_core_get_userlink($user->id),
+                esc_html($user->last_active),
+                esc_html__('Remove Invite', 'buddymeet')
+            );
         }
 
         die();
@@ -251,37 +240,36 @@ class BuddyMeet_Component extends BP_Component {
     public function members_send_invites() {
         check_ajax_referer( 'buddymeet_send_invites' );
 
-        $users =  $_REQUEST['users'];
-
         $bp = buddypress();
         $group = $bp->groups->current_group;
         $group_id = $group->id;
         $requesting_user_id = get_current_user_id();
-        $room = isset($_REQUEST['room']) ? $_REQUEST['room'] : null;
-        if($room === null){
-            $room = wp_generate_uuid4();
-            $room_option_key = BuddyMeet::OPTION_PREFIX_MEET_ROOM . $requesting_user_id;
-            groups_update_groupmeta($group_id, $room_option_key, $room);
 
-            //The first time a room is created we need to also notify the user who requested the meet.
-            if ( !empty($users) ) {
-                $users[] = get_current_user_id();
-            }
+        $users = buddymeet_sanitize_request_array('users', 'absint');
+        $room = isset($_REQUEST['room']) ? sanitize_text_field($_REQUEST['room']) : null;
+        $room_name = isset($_REQUEST['room_name']) ? sanitize_text_field($_REQUEST['room_name']) : null;
+        $current_user = get_current_user_id();
+
+        if(is_null($room)){
+            $users[] = $current_user;
         }
 
+        if (!empty($users)) {
+            $room = $this->add_users_to_room($group_id, $users, $room, $room_name)['id'];
 
-        if ( !empty($users) && bp_is_active( 'notifications' ) ) {
             foreach ($users as $user_id) {
-                //send the notification
-                $notification_id = bp_notifications_add_notification( array(
-                    'user_id'           => $user_id,
-                    'item_id'           => $group->id,
-                    'secondary_item_id' => $requesting_user_id,
-                    'component_name'    => buddymeet_get_slug(),
-                    'component_action'  => 'members_send_invites',
-                    'allow_duplicate'   => true
-                ) );
-                bp_notifications_add_meta($notification_id, 'room', $room);
+                if(bp_is_active( 'notifications' )) {
+                    //send the notification
+                    $notification_id = bp_notifications_add_notification(array(
+                        'user_id' => $user_id,
+                        'item_id' => $group->id,
+                        'secondary_item_id' => $requesting_user_id,
+                        'component_name' => buddymeet_get_slug(),
+                        'component_action' => 'members_send_invites',
+                        'allow_duplicate' => true
+                    ));
+                    bp_notifications_add_meta($notification_id, 'room', $room);
+                }
 
                 $group_link = bp_get_group_permalink( $group );
                 $meet_link = $group_link . buddymeet_get_slug() . '/members/' . $room;
@@ -302,63 +290,29 @@ class BuddyMeet_Component extends BP_Component {
             }
         }
 
-        $initialize = (bool) array_key_exists('initialize', $_REQUEST) ? $_REQUEST['initialize'] === "true" : false;
+        $return = array();
+        $initialize = isset($_REQUEST['initialize']) ? $_REQUEST['initialize'] === "true" : false;
         if($initialize) {
-            $user_name = esc_js($bp->loggedin_user->userdata->display_name);
-            $avatar_url = esc_js(bp_get_loggedin_user_avatar('html=false'));
-
-            $subject = $group->name;
-
-            $password = groups_get_groupmeta($group->id, 'buddymeet_password', true);
-            $domain = groups_get_groupmeta($group->id, 'buddymeet_domain', true);
-            $film_strip_only = groups_get_groupmeta($group->id, 'buddymeet_film_strip_only', true) === '1' ? 'true' : 'false';;
-            $width = groups_get_groupmeta($group->id, 'buddymeet_width', true);
-            $height = groups_get_groupmeta($group->id, 'buddymeet_height', true);
-            $start_audio_only = groups_get_groupmeta($group->id, 'buddymeet_start_audio_only', true) === '1' ? 'true' : 'false';
-            $default_language = groups_get_groupmeta($group->id, 'buddymeet_default_language', true);
-            $background_color = groups_get_groupmeta($group->id, 'buddymeet_background_color', true);
-            $show_watermark = groups_get_groupmeta($group->id, 'buddymeet_show_watermark', true) === '1' ? 'true' : 'false';
-            $disable_video_quality_label = groups_get_groupmeta($group->id, 'buddymeet_disable_video_quality_label', true) === '1' ? 'true' : 'false';
-            $settings = groups_get_groupmeta($group->id, 'buddymeet_settings', true);
-            $toolbar = groups_get_groupmeta($group->id, 'buddymeet_toolbar', true);
-
-            $content = '[buddymeet 
-            room = "' . $room . '" 
-            subject = "' . $subject . '"
-            user = "' . $user_name . '"
-            avatar = "' . $avatar_url . '"
-            password = "' . $password . '"
-            domain = "' . $domain . '"
-            film_strip_only = "' . $film_strip_only . '"
-            width = "' . $width . '"
-            height = "' . $height . '"
-            start_audio_only = "' . $start_audio_only . '"
-            default_language = "' . $default_language . '"
-            background_color = "' . $background_color . '"
-            show_watermark = "' . $show_watermark . '"
-            disable_video_quality_label = "' . $disable_video_quality_label . '"
-            settings = "' . $settings . '"
-            toolbar = "' . $toolbar . '"
-        ]';
-
-            echo do_shortcode($content);
-            echo '<input type="hidden" name="room" id="room" value="'.$room.'" />';
+            $return['redirect'] = esc_url($meet_link);
         }
 
-        die();
+        die(json_encode($return));
     }
 
     public function members_delete_room() {
         check_ajax_referer( 'buddymeet_members_delete_room' );
 
-        $requesting_user_id = get_current_user_id();
-        $room_option_key = BuddyMeet::OPTION_PREFIX_MEET_ROOM . $requesting_user_id;
         $bp = buddypress();
         $group_id = $bp->groups->current_group->id;
+        $user_id = get_current_user_id();
+        $room =  isset($_REQUEST['room']) ? sanitize_text_field($_REQUEST['room']) : null;
 
-        groups_delete_groupmeta($group_id, $room_option_key);
+        $this->remove_users_from_room($group_id, array($user_id), $room);
 
-        die();
+        $group_link = bp_get_group_permalink( $bp->groups->current_group );
+        $meet_link = $group_link  . 'buddymeet/members/';
+        $return = array('redirect' => esc_url($meet_link));
+        die(json_encode($return));
     }
 
     public function format_notifications($action, $item_id, $secondary_item_id, $total_items, $format = 'string'){
@@ -395,6 +349,86 @@ class BuddyMeet_Component extends BP_Component {
                 }
 
                 break;
+        }
+    }
+
+    public function get_invite_list_entry_template(){
+        return '<li id="uid-%1$s">
+                    %2$s
+                    <h4>%3$s</h4>
+                    <span class="activity">%4$s</span>
+                    <div class="action">
+                        <a class="remove" href="#" id="uid-%1$s">%5$s</a>
+                    </div>
+                </li>';
+    }
+
+    public function add_users_to_room($group_id, $users, $room_id = null, $room_name = null){
+        //Add the room in the rooms list of each user
+        $room =  array(
+            'id' => $room_id === null ? wp_generate_uuid4() : $room_id,
+            'name' => $room_name === null ? sprintf(__('Room %s'), time()) : $room_name
+        );
+
+        foreach($users as $user_id) {
+            $user_rooms_option_key = BuddyMeet::USER_ROOMS_PREFIX . $user_id;
+            $rooms = groups_get_groupmeta($group_id, $user_rooms_option_key);
+            if($rooms){
+                $rooms[] = $room;
+            } else {
+                $rooms = array($room);
+            }
+            groups_update_groupmeta($group_id, $user_rooms_option_key, $rooms);
+        }
+
+        //add the users as members of the current room
+        $room_users_option_key = BuddyMeet::ROOM_MEMBERS_PREFIX . $room['id'];
+        $current_users = groups_get_groupmeta($group_id, $room_users_option_key);
+        if(!$current_users){
+            $current_users = array_unique(array_merge($users, array(get_current_user_id())));
+        } else {
+            $current_users = array_unique(array_merge($users, $current_users));
+        }
+        groups_update_groupmeta($group_id, $room_users_option_key, $current_users);
+
+        return $room;
+    }
+
+    public function remove_users_from_room($group_id, $users, $room_id){
+        if(is_null($room_id)){
+            return;
+        }
+
+        //delete room from all users
+        foreach($users as $user_id){
+            $user_rooms_option_key = BuddyMeet::USER_ROOMS_PREFIX . $user_id;
+            $rooms = groups_get_groupmeta($group_id, $user_rooms_option_key);
+            foreach($rooms as $index => $room){
+                if($room['id'] === $room_id){
+                    unset($rooms[$index]);
+                    break;
+                }
+            }
+            if(empty($rooms)){
+                groups_delete_groupmeta($group_id, $user_rooms_option_key);
+            } else {
+                groups_update_groupmeta($group_id, $user_rooms_option_key, $rooms);
+            }
+
+            //remove users from room
+            $room_members_option_key = BuddyMeet::ROOM_MEMBERS_PREFIX . $room_id;
+            $members = groups_get_groupmeta($group_id, $room_members_option_key);
+            foreach($members as $index => $member){
+                if($member === $user_id){
+                    unset($members[$index]);
+                    break;
+                }
+            }
+            if(empty($members)) {
+                groups_delete_groupmeta($group_id, $room_members_option_key);
+            } else {
+                groups_update_groupmeta($group_id, $room_members_option_key, $members);
+            }
         }
     }
 }

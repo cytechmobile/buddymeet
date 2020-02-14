@@ -85,8 +85,10 @@ class BuddyMeet_Group extends BP_Group_Extension {
     function edit_screen_save( $group_id = null ) {
         global $bp;
 
-        if ( sanitize_text_field( $_POST['save'] == null ) )
+        $do_save = isset($_POST['save'] ) ? sanitize_text_field($_POST['save'])  === "true": false;
+        if ($do_save) {
             return false;
+        }
 
         if ( !$group_id ) {
             $group_id = $bp->groups->current_group->id;
@@ -115,7 +117,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
 
             $enabled = buddymeet_is_enabled($bp->groups->current_group->id);
             if ( $enabled == 1 ) {
-                $this->get_groups_template_part( 'buddymeet' );
+                $this->get_groups_template_part( 'buddymeet/home' );
             }
         } else {
             echo '<div id="message" class="error"><p>'.__('This content is only available to group members.', 'buddymeet').'</p></div>';
@@ -164,7 +166,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('domain', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Domain', 'buddymeet' ); ?></label>
-                    <input type="text" name="buddymeet_domain" id="buddymeet_domain" value="<?php echo $domain; ?>"/>
+                    <input type="text" name="buddymeet_domain" id="buddymeet_domain" value="<?php esc_attr_e($domain); ?>"/>
                     <p class="description"><?php esc_html_e( 'The domain the Jitsi Meet server runs. Defaults to their free hosted service.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
@@ -172,17 +174,17 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('room', $display_settings)): ?>
                 <div class="field-group">
                         <label><?php _e( 'Room', 'buddymeet' ); ?></label>
-                        <input type="text" name="buddymeet_room" id="buddymeet_room" value="<?php echo $room; ?>"/>
+                        <input type="text" name="buddymeet_room" id="buddymeet_room" value="<?php esc_attr_e($room); ?>"/>
                         <p class="description"><?php esc_html_e( 'Set the room group members will enter automatically when visiting the ' .buddymeet_get_name(). ' menu.', 'buddymeet' ); ?></p>
                 </div>
                 <?php else: ?>
-                    <input type="hidden" name="buddymeet_room" value="<?php echo $room; ?>"/>
+                    <input type="hidden" name="buddymeet_room" value="<?php esc_attr_e($room); ?>"/>
                 <?php endif; ?>
 
                 <?php if(in_array('password', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Password', 'buddymeet' ); ?></label>
-                    <input type="password" name="buddymeet_password" value="<?php echo $password; ?>"/>
+                    <input type="password" name="buddymeet_password" value="<?php  esc_attr_e($password); ?>"/>
                     <p class="description"><?php esc_html_e( 'Set the password the group members will have to enter to join the room. The first to visit - and therefore create - the room will enter without any password. The rest participants will have to fill-in the password.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
@@ -190,7 +192,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('toolbar', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Toolbar', 'buddymeet' ); ?></label>
-                    <input type="text" name="buddymeet_toolbar" id="buddymeet_toolbar" value="<?php echo $toolbar; ?>"/>
+                    <input type="text" name="buddymeet_toolbar" id="buddymeet_toolbar" value="<?php  esc_attr_e($toolbar); ?>"/>
                     <p class="description"><?php _e( 'The toolbar buttons to get displayed in comma separated format. For more information refer to <a  target="_blank" href="https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49">TOOLBAR_BUTTONS</a>.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
@@ -198,7 +200,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('settings', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Settings', 'buddymeet' ); ?></label>
-                    <input type="text" name="buddymeet_settings" id="buddymeet_settings" value="<?php echo $settings; ?>"/>
+                    <input type="text" name="buddymeet_settings" id="buddymeet_settings" value="<?php  esc_attr_e($settings); ?>"/>
                     <p class="description"><?php _e( 'The settings to be available in comma separated format. For more information refer to <a  target="_blank" href="https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57">SETTINGS_SECTIONS</a>.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
@@ -206,7 +208,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('width', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Width', 'buddymeet' ); ?></label>
-                    <input type="text" name="buddymeet_width" id="buddymeet_width" value="<?php echo $width; ?>"/>
+                    <input type="text" name="buddymeet_width" id="buddymeet_width" value="<?php  esc_attr_e($width); ?>"/>
                     <p class="description"><?php esc_html_e( 'The width in pixels or percentage of the embedded window.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
@@ -214,7 +216,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('height', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Height', 'buddymeet' ); ?></label>
-                    <input type="text" name="buddymeet_height" id="buddymeet_height" value="<?php echo $height; ?>"/>
+                    <input type="text" name="buddymeet_height" id="buddymeet_height" value="<?php  esc_attr_e($height); ?>"/>
                     <p class="description"><?php esc_html_e( 'The height in pixels or percentage of the embedded window.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
@@ -222,7 +224,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('background_color', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Background Color', 'buddymeet' ); ?></label>
-                    <input type="text" name="buddymeet_background_color" id="buddymeet_background_color" value="<?php echo $background_color; ?>"/>
+                    <input type="text" name="buddymeet_background_color" id="buddymeet_background_color" value="<?php  esc_attr_e($background_color); ?>"/>
                     <p class="description"><?php esc_html_e( 'The background color of the window when camera is off.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
@@ -230,7 +232,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <?php if(in_array('default_language', $display_settings)): ?>
                 <div class="field-group">
                     <label><?php _e( 'Default Language', 'buddymeet' ); ?></label>
-                    <input type="text" name="buddymeet_default_language" id="buddymeet_default_language" value="<?php echo $default_language; ?>"/>
+                    <input type="text" name="buddymeet_default_language" id="buddymeet_default_language" value="<?php  esc_attr_e($default_language); ?>"/>
                     <p class="description"><?php esc_html_e( 'The default language.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>

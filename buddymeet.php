@@ -22,7 +22,8 @@ if ( ! class_exists( 'BuddyMeet' ) ) :
  */
 class BuddyMeet {
 
-    const OPTION_PREFIX_MEET_ROOM = 'buddymeet_room_';
+    const USER_ROOMS_PREFIX = 'buddymeet_user_room_';
+    const ROOM_MEMBERS_PREFIX = 'buddymeet_room_members_';
 
 	private static $instance;
 
@@ -328,7 +329,7 @@ class BuddyMeet {
 		?>
 		<div id="message" class="error">
 			<?php foreach ( $warnings as $warning ) : ?>
-				<p><?php echo $warning; ?></p>
+				<p><?php esc_html_e($warning); ?></p>
 			<?php endforeach ; ?>
 		</div>
 		<?php
