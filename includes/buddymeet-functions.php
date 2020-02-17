@@ -254,12 +254,6 @@ function buddymeet_is_enabled($group_id = false){
     return $enabled;
 }
 
-function buddymeet_sanitize_request_array($param, $callback){
-    $array = isset( $_REQUEST[$param] ) ? (array) $_REQUEST[$param] : array();
-    return array_map($callback, $array);
-}
-
-
 function buddymeet_get_room_members($room, $group_id, $initialize = true){
     $room_members = false;
     if($room !== null) {

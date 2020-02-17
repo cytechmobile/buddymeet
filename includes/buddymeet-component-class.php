@@ -245,7 +245,9 @@ class BuddyMeet_Component extends BP_Component {
         $group_id = $group->id;
         $requesting_user_id = get_current_user_id();
 
-        $users = buddymeet_sanitize_request_array('users', 'absint');
+        $users = isset($_REQUEST['users']) && is_array($_REQUEST['users']) ?
+            array_map('absint', $_REQUEST['users']) : array();
+
         $room = isset($_REQUEST['room']) ? sanitize_text_field($_REQUEST['room']) : null;
         $room_name = isset($_REQUEST['room_name']) ? sanitize_text_field($_REQUEST['room_name']) : null;
         $current_user = get_current_user_id();
@@ -282,7 +284,7 @@ class BuddyMeet_Component extends BP_Component {
                         'inviter.name'   => bp_core_get_userlink($requesting_user_id, true, false),
                         'inviter.url'    => bp_core_get_user_domain( $requesting_user_id ),
                         'inviter.id'     => $requesting_user_id,
-                        'meet.url'    => esc_url( $meet_link  )
+                        'meet.url'       => $meet_link
                     ),
                 );
 
@@ -293,7 +295,7 @@ class BuddyMeet_Component extends BP_Component {
         $return = array();
         $initialize = isset($_REQUEST['initialize']) ? $_REQUEST['initialize'] === "true" : false;
         if($initialize) {
-            $return['redirect'] = esc_url($meet_link);
+            $return['redirect'] = $meet_link;
         }
 
         die(json_encode($return));
@@ -311,7 +313,8 @@ class BuddyMeet_Component extends BP_Component {
 
         $group_link = bp_get_group_permalink( $bp->groups->current_group );
         $meet_link = $group_link  . 'buddymeet/members/';
-        $return = array('redirect' => esc_url($meet_link));
+        $return = array('redirect' => $meet_link);
+
         die(json_encode($return));
     }
 
