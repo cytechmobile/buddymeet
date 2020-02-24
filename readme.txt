@@ -18,7 +18,25 @@ BuddyMeet is a BuddyPress (2.5+) plugin that uses [Jitsi Meet](https://jitsi.org
 * On demand rooms among specific invited group members
 * Automatic customization of the room's subject and  the name/avatar of the participants
 * Customization of all the paremeters that [Jitsi Meet API](https://github.com/jitsi/jitsi-meet/blob/master/doc/api.md) supports
-* The [buddymeet] short code to add a conference room to any wordpress page
+
+Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HERE] to add a conference room to any wordpress page. In that case, you have to pass any configuration by using the following shortcode parameters:
+
+* domain: The domain of the Jitsi Meet installation. BuddyMeet uses by default the meet.jit.si free service.
+* room: The identifier of the room.
+* subject: The subject of the room. If empty the room is being displayed as the subject.
+* password: A password for the room. The first to enter the room sets that password and all other participants have to put it to enter.
+* show_watermark: Whether to show the Jitsi.org watermark or not.
+* width: The width of the embedded window.
+* height: The height of the embedded window.
+* start_audio_only: Start the meet with the microphone only enabled and the camera off.
+* film_strip_only: Start the meet in film strip only mode.
+* disable_video_quality_label: Disable the video quality indicator.
+* user: The user to display
+* avatar: The url with the avatar to display
+* settings: A csv with the Jitsi Meet settings to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57)
+* toolbar: A csv with the Jitsi Meet toolbar options to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49).
+* background_color: The background color of the window
+* default_language: The default language of the Jitsi Meet interface.
 
 BuddyMeet uses by default the meet.jit.si service which is maintained by the Jitsi team at 8x8. Upon the initialization of a room, BuddyMeet sends the following information to the service:
 
@@ -55,6 +73,14 @@ Jitsi Meet uses your browser's API to ask for permissions to access your microph
 * You denied access to your browser when you were asked for.
 * You have denied globally access to all applications via your browser's configuration
 
+= I cannot find the Settings page =
+
+BuddyMeet is mainly a BuddyPress plugins. It actually extends the BuddyPress Groups component by adding a new BuddyMeet menu page as well as a settings page accessible via the Manage menu of the Group. However, if you want to use BuddyMeet in any other WordPress page you can use the [buddymeet] shortcode. In that case the plugin just adds a room in the respective page by using the passed configuration parameters.
+
+= How can I create / switch among multiple rooms =
+
+That functionality is accessible only from inside a BuddyPress Group. For more information please check the previous FAQ entry.
+
 == Screenshots ==
 
 1. BuddyMeet settings page
@@ -71,6 +97,12 @@ Jitsi Meet uses your browser's API to ask for permissions to access your microph
 = 1.0.0 =
 
 * Initial version of the plugin
+
+= 1.1.0 =
+
+* Fixed an issue causing the [buddymeet] short code not to work properly
+* Added documentation about the configuration parameters of the [buddymeet] short code
+* Updated the FAQ
 
 == Upgrade Notice ==
 

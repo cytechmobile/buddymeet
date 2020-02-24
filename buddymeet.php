@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 1.0.0
+Version: 1.1.0
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -137,10 +137,15 @@ class BuddyMeet {
 		add_action( 'activate_'   . $this->basename, 'buddymeet_activation'   );
 		add_action( 'deactivate_' . $this->basename, 'buddymeet_deactivation' );
 
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
 		add_action( 'bp_loaded',  array( $this, 'load_textdomain' ) );
 		add_action( 'bp_include', array( $this, 'load_component'  ) );
 
         add_action( 'bp_setup_nav', array($this, 'set_default_groups_nav'), 20 );
+
+        add_shortcode( 'buddymeet', array($this, 'add_shortcode'));
 
 		do_action_ref_array( 'buddymeet_after_setup_actions', array( &$this ) );
 	}
@@ -172,6 +177,42 @@ class BuddyMeet {
 			load_plugin_textdomain( $this->domain, false, basename( $this->plugin_dir ) . '/languages' );
 		}
 	}
+
+    public function enqueue_styles(){
+        if(is_plugin_active('buddypress/bp-loader.php')) {
+            global $bp;
+            if (buddymeet_get_slug() === $bp->current_action) {
+                $sub_action = buddymeet_get_current_action();
+                if ('members' === $sub_action) {
+                    //Enqueue the jquery autocomplete library
+                    wp_enqueue_style('buddymeet-invites-css', buddymeet_get_plugin_url() . "assets/css/invites.css", '', buddymeet_get_version(), 'screen');
+                }
+            }
+        }
+    }
+
+    public function enqueue_scripts(){
+        $load_scripts = false;
+        if(is_page()){
+            $post = get_post();
+            if($post && has_shortcode($post->post_content, buddymeet_get_slug())){
+                $load_scripts = true;
+            } else if( function_exists( 'buddypress' )){
+                global $bp;
+                if(buddymeet_get_slug() === $bp->current_action){
+                    $load_scripts = true;
+                }
+            }
+        }
+
+        if($load_scripts){
+            wp_enqueue_script( 'buddymeet-jquery-autocomplete-js', buddymeet_get_plugin_url() . "assets/js/jquery.autocomplete-min.js", array( 'jquery' ) );
+            wp_enqueue_script( 'buddymeet-invites-js', buddymeet_get_plugin_url()  . 'assets/js/invites.js', array( 'buddymeet-jquery-autocomplete-js' ) );
+
+            $handle = 'buddymeet-jitsi-js';
+            wp_enqueue_script( $handle, "https://meet.jit.si/external_api.js", array(), buddymeet_get_version(), true);
+        }
+    }
 
 	/**
 	 * Finally, Load the component
@@ -335,6 +376,84 @@ class BuddyMeet {
 		<?php
 		}
 	}
+
+    /**
+     * Registers the buddymeet shortcode
+     * @param $params
+     */
+    public function add_shortcode($params) {
+        $params = apply_filters('buddymeet_custom_settings', $params);
+        $params = wp_parse_args($params, buddymeet_default_settings());
+
+        $script = sprintf(
+            $this->get_jitsi_init_template(),
+            $params['domain'],
+            $params['settings'],
+            $params['toolbar'],
+            $params['room'],
+            $params['width'],
+            $params['height'],
+            $params['parent_node'],
+            $params['start_audio_only'] === "true" || $params['start_audio_only'] === true ? 1 : 0,
+            $params['default_language'],
+            $params['film_strip_only'] === "true" || $params['film_strip_only'] === true? 1 : 0,
+            $params['background_color'],
+            $params['show_watermark'] === "true" || $params['show_watermark'] === true? 1 : 0,
+            $params['disable_video_quality_label'] === "true" || $params['disable_video_quality_label'] === true ? 1 : 0,
+            $params['user'],
+            $params['subject'],
+            $params['avatar'],
+            $params['password']
+        );
+
+        if(wp_doing_ajax()){
+            //when initializing the meet via an ajax request we need to return the script to the caller to
+            //add it in the page
+            echo '<script>' . $script . '</script>';
+        } else {
+            $handle = "buddymeet-jitsi-js";
+            wp_add_inline_script($handle, $script);
+        }
+
+        return '<div id="meet"></div>';
+    }
+
+    public function get_jitsi_init_template(){
+        return 'const domain = "%1$s";
+            const settings = "%2$s"; 
+            const toolbar = "%3$s"; 
+            const options = {
+                roomName: "%4$s",
+                width: "%5$s",
+                height: %6$d,
+                parentNode: document.querySelector("%7$s"),
+                configOverwrite: {
+                    startAudioOnly: %8$b === 1,
+                    defaultLanguage: "%9$s",
+                },
+                interfaceConfigOverwrite: {
+                    filmStripOnly: %10$b === 1,
+                    DEFAULT_BACKGROUND: "%11$s",
+                    DEFAULT_REMOTE_DISPLAY_NAME: "",
+                    SHOW_JITSI_WATERMARK: %12$b === 1,
+                    SHOW_WATERMARK_FOR_GUESTS: %12$b === 1,
+                    LANG_DETECTION: true,
+                    CONNECTION_INDICATOR_DISABLED: false,
+                    VIDEO_QUALITY_LABEL_DISABLED: %13$b === 1,
+                    SETTINGS_SECTIONS: settings.split(","),
+                    TOOLBAR_BUTTONS: toolbar.split(","),
+                },
+            };
+            const api = new JitsiMeetExternalAPI(domain, options);
+            api.executeCommand("displayName", "%14$s");
+            api.executeCommand("subject", "%15$s");
+            api.executeCommand("avatarUrl", "%16$s");
+            api.addEventListener("videoConferenceJoined", function(event){
+                api.executeCommand("password", "%17$s");
+            });
+
+            window.api = api;';
+    }
 }
 
 function buddymeet() {
