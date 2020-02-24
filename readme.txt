@@ -20,12 +20,10 @@ BuddyMeet is a BuddyPress (2.5+) plugin that uses [Jitsi Meet](https://jitsi.org
 * Customization of all the paremeters that [Jitsi Meet API](https://github.com/jitsi/jitsi-meet/blob/master/doc/api.md) supports
 * The [buddymeet] short code to add a conference room to any wordpress page
 
-BuddyMeet uses by default the meet.jit.si service is which maintained by the Jitsi team at 8x8. Upon the initialization of a room, BuddyMeet sends the following information to the service:
+BuddyMeet uses by default the meet.jit.si service which is maintained by the Jitsi team at 8x8. Upon the initialization of a room, BuddyMeet sends the following information to the service:
 
 * The name of the current buddypress group as the subject of the call
 * The name, the surname and the avatar of the currently logged in user
-
-Moreover meet.jit.si service uses the
 
 However, if you want to use your own hosted installation of Jitsi Meet, you can just configure the corresponding domain via the "Manage" menu of a BuddyPress group. For more information about Jitsi Meet please follow the links below:
 
@@ -48,10 +46,19 @@ You can download and install BuddyMeet using the built in WordPress plugin insta
 
 Use the support forum of this plugin.
 
+= Jitsi Meet cannot access my microphone or camera =
+
+Jitsi Meet uses your browser's API to ask for permissions to access your microphone or camera. In case you get an error that your device can not by accessed or used, please check one of the following:
+
+* Another application uses the device.
+* Your browsing context is insecure (that is, the page was loaded using HTTP rather than HTTPS).
+* You denied access to your browser when you were asked for.
+* You have denied globally access to all applications via your browser's configuration
+
 == Screenshots ==
 
 1. BuddyMeet settings page
-2. Meet the group
+2. Meet all the group members
 3. Invite a group member to a meet
 4. Send the invitations to the added group members
 5. Meet the invited members
