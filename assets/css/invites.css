@@ -1,49 +1,25 @@
-#create-group-form ul.first, #send-invite-form ul.first {
-	margin: 0 0 2em 0;
-	list-style-type: none;
-}
-
-#create-group-form ul.first li, #send-invite-form ul.first li  {
-	padding-left: 0;
-	margin-left: 0;
-}
-#create-group-form ul.first li input, #send-invite-form ul.first li input  {
-	width: 95%;
-}
-
-.autocomplete-w1 { background:url(../img/shadow.png) no-repeat bottom right; position:absolute; top:0px; left:0px; margin:8px 0 0 6px; /* IE6 fix: */ _background:none; _margin:0; }
-.autocomplete { border:1px solid #999; background:#FFF; cursor:pointer; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
-.autocomplete .selected { background:#FFFFFF; }
-.autocomplete div { padding:2px 5px; white-space:nowrap; }
-.autocomplete strong { font-weight:normal; color:#3399FF; }
-
 .autocomplete-loading {
-	background: transparent url(../img/loading.gif) no-repeat 98% center;
+	background: transparent url(../img/loading.gif) no-repeat 98% ;
 }
 
-input.submit-disabled {
-	opacity: .5;
+#meet-invite-list { list-style-type: none; }
+
+.ui-autocomplete{
+	background-color: rgb(255, 255, 255);
+	border: 1px solid rgba(0,0,0,.08);
+	width: 300px;
 }
 
-input.submit-disabled:hover {
-	background: inherit;
+.ui-autocomplete .ui-menu-item{
+	padding: 10px;
+	border-bottom: 1px solid rgba(0,0,0,.08);
 }
 
-.submit{
-	float:right;
+.ui-autocomplete .ui-state-focus{
+	background-color: #f4f4f4;
+	cursor: pointer;
 }
 
-.submit-btn{
-	font-size: 11px !important;
-}
-
-#stopCall{
-	padding: 10px 24px;
-	font-size: 11px;
-	font-weight: 600;
-	text-transform: uppercase;
-	background-color: #F16645;
-	border: none;
-	color: #FFF;
-	border-radius: 2px;
+.ui-front {
+	z-index: 100;
 }

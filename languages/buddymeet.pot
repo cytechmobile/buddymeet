@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BuddyMeet\n"
-"POT-Creation-Date: 2020-01-17 16:25+0200\n"
+"POT-Creation-Date: 2020-04-09 11:28+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Themis Dakanalis <tdakanalis@cytech.gr>\n"
 "Language-Team: Cytech\n"
-"Report-Msgid-Bugs-To:  Themis Dakanalis <tdakanalis@cytech.gr>\n"
+"Report-Msgid-Bugs-To: Themis Dakanalis <tdakanalis@cytech.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,165 +19,256 @@ msgstr ""
 "X-Generator: Poedit 2.2.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: buddymeet.php:277
+#: buddymeet.php:336
 #, php-format
 msgid "BuddyMeet requires at least version %s of BuddyPress."
 msgstr ""
 
-#: buddymeet.php:278
+#: buddymeet.php:337
 #, php-format
 msgid "Upgrade BuddyPress to at least version %s"
 msgstr ""
 
-#: buddymeet.php:288
+#: buddymeet.php:347
 msgid "BuddyMeet requires to be activated on the blog where BuddyPress is activated."
 msgstr ""
 
-#: buddymeet.php:289
+#: buddymeet.php:348
 msgid "Activate BuddyMeet on the same blog than BuddyPress"
 msgstr ""
 
-#: buddymeet.php:293
+#: buddymeet.php:352
 msgid "BuddyMeet and BuddyPress need to share the same network configuration."
 msgstr ""
 
-#: buddymeet.php:294
+#: buddymeet.php:353
 msgid "Make sure BuddyMeet is activated at the same level than BuddyPress on the network"
 msgstr ""
 
-#: buddymeet.php:301
+#: buddymeet.php:360
 msgid "deactivate"
 msgstr ""
 
-#: buddymeet.php:302
+#: buddymeet.php:361
 #, php-format
 msgid "You should %s BuddyMeet"
 msgstr ""
 
-#: buddymeet.php:309
+#: buddymeet.php:368
 msgid "Once done try to activate BuddyMeet again."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:99
+#: includes/buddymeet-component-class.php:106
+msgctxt "BuddyMeet group call screen sub nav"
+msgid "Meet the Group"
+msgstr ""
+
+#: includes/buddymeet-component-class.php:116
+msgctxt "BuddyMeet members call screen sub nav"
+msgid "Meet Members"
+msgstr ""
+
+#: includes/buddymeet-component-class.php:197
+msgid "Remove Invite"
+msgstr ""
+
+#: includes/buddymeet-component-class.php:297
+#, php-format
+msgid "%s: You sent a meet request"
+msgstr ""
+
+#: includes/buddymeet-component-class.php:299
+#, php-format
+msgid "%s: User %s sent you a meet request"
+msgstr ""
+
+#: includes/buddymeet-component-class.php:336
+#, php-format
+msgid "Room %s"
+msgstr ""
+
+#: includes/buddymeet-functions.php:206
+msgid "[{{{site.name}}}] You have a new meet request in group: {{group.name}}"
+msgstr ""
+
+#: includes/buddymeet-functions.php:208
+msgid ""
+"<a href=\"{{{inviter.url}}}\">{{inviter.name}}</a> has invited you to join a meet as member of the group &quot;{{group.name}}&quot;. <a href=\"{{{meet.url}}}\">\n"
+"Go here to enter the meet</a> or <a href=\"{{{group.url}}}\">visit the group</a> to learn more."
+msgstr ""
+
+#: includes/buddymeet-functions.php:210
+msgid "{{inviter.name}} has invited you to join a meet as member of the group \"{{group.name}}\". To join the meet, visit: {{{meet.url}}}. To learn more about the group, visit: {{{group.url}}}. To view {{inviter.name}}'s profile, visit: {{{inviter.url}}}"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:101
 msgid "Settings saved successfully"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:121
+#: includes/buddymeet-group-class.php:123
 msgid "This content is only available to group members."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:132
-msgid "BuddyMeet Settings"
+#: includes/buddymeet-group-class.php:137
+msgid " Settings"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:135
+#: includes/buddymeet-group-class.php:140
 msgid "Allow members of this group to enter the same video conference room."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:163
+#: includes/buddymeet-group-class.php:164
 msgid "Activate"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:168
+#: includes/buddymeet-group-class.php:170
 msgid "Domain"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:170
+#: includes/buddymeet-group-class.php:172
 msgid "The domain the Jitsi Meet server runs. Defaults to their free hosted service."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:174
+#: includes/buddymeet-group-class.php:178
 msgid "Room"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:176
-msgid "Set the room group members will enter automatically when visiting the buddymeet menu."
-msgstr ""
-
 #: includes/buddymeet-group-class.php:180
-msgid "Password"
-msgstr ""
-
-#: includes/buddymeet-group-class.php:182
-msgid "Set the password the group members will have to enter to join the room. The first to visit - and therefore create - the room will enter without any password. The rest participants will have to fill-in the password."
-msgstr ""
-
-#: includes/buddymeet-group-class.php:186
-msgid "Toolbar"
+msgid "Set the room group members will enter automatically when visiting the "
 msgstr ""
 
 #: includes/buddymeet-group-class.php:188
+msgid "Password"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:190
+msgid "Set the password the group members will have to enter to join the room. The first to visit - and therefore create - the room will enter without any password. The rest participants will have to fill-in the password."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:196
+msgid "Toolbar"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:198
 msgid "The toolbar buttons to get displayed in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49\">TOOLBAR_BUTTONS</a>."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:192
+#: includes/buddymeet-group-class.php:204
 msgid "Settings"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:194
+#: includes/buddymeet-group-class.php:206
 msgid "The settings to be available in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57\">SETTINGS_SECTIONS</a>."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:199
+#: includes/buddymeet-group-class.php:212
 msgid "Width"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:201
+#: includes/buddymeet-group-class.php:214
 msgid "The width in pixels or percentage of the embedded window."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:205
+#: includes/buddymeet-group-class.php:220
 msgid "Height"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:207
+#: includes/buddymeet-group-class.php:222
 msgid "The height in pixels or percentage of the embedded window."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:211
+#: includes/buddymeet-group-class.php:228
 msgid "Background Color"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:213
+#: includes/buddymeet-group-class.php:230
 msgid "The background color of the window when camera is off."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:217
+#: includes/buddymeet-group-class.php:236
 msgid "Default Language"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:219
+#: includes/buddymeet-group-class.php:238
 msgid "The default language."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:224
+#: includes/buddymeet-group-class.php:245
 msgid "Show Watermark"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:226
+#: includes/buddymeet-group-class.php:247
 msgid "Show/Hide the Jitsi Meet watermark. Please leave it checked unless you use your own domain."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:231
+#: includes/buddymeet-group-class.php:254
+msgid "Show Brand Watermark"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:256
+msgid "Show/Hide the Jitsi Meet Brand watermark."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:262
+msgid "Brand Watermark Link"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:264
+msgid "The link for the brand watermark."
+msgstr ""
+
+#: includes/buddymeet-group-class.php:271
 msgid "Film Strip Mode Only"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:233
+#: includes/buddymeet-group-class.php:273
 msgid "Display the window in film strip only mode."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:238
+#: includes/buddymeet-group-class.php:280
 msgid "Start Audio Only"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:240
+#: includes/buddymeet-group-class.php:282
 msgid "Every participant enters the room having enabled only their microphone. Camera is off."
 msgstr ""
 
-#: includes/buddymeet-group-class.php:246
+#: includes/buddymeet-group-class.php:289
 msgid "Disable Video Quality Indicator"
 msgstr ""
 
-#: includes/buddymeet-group-class.php:248
+#: includes/buddymeet-group-class.php:291
 msgid "Hide/Show the video quality indicator."
+msgstr ""
+
+#: templates/groups/single/buddymeet/home.php:8
+msgid "BuddyMeet secondary navigation"
+msgstr ""
+
+#: templates/groups/single/buddymeet/home.php:16
+msgid "Select a room"
+msgstr ""
+
+#: templates/groups/single/buddymeet/home.php:18
+msgid "selected"
+msgstr ""
+
+#: templates/groups/single/buddymeet/home.php:39
+msgid "This content is only available to invited members."
+msgstr ""
+
+#: templates/groups/single/buddymeet/members.php:18
+msgid "Room Name"
+msgstr ""
+
+#: templates/groups/single/buddymeet/members.php:21
+msgid "Search for members to invite in the room"
+msgstr ""
+
+#: templates/groups/single/buddymeet/members.php:34
+msgid "Leave Room"
+msgstr ""
+
+#: templates/groups/single/buddymeet/members.php:35
+msgid "Send Invites"
 msgstr ""

@@ -24,7 +24,8 @@ function buddymeet_get_version() {
  * @return string the slug
  */
 function buddymeet_get_slug() {
-    $slug = isset( buddypress()->pages->buddymeet->slug ) ? buddypress()->pages->buddymeet->slug : buddymeet()->buddymeet_slug ;
+    $slug = function_exists( 'buddypress' ) && isset( buddypress()->pages->buddymeet->slug ) ?
+        buddypress()->pages->buddymeet->slug : buddymeet()->buddymeet_slug ;
 
     return apply_filters( 'buddymeet_get_slug', $slug );
 }
@@ -37,7 +38,8 @@ function buddymeet_get_slug() {
  * @return string the name
  */
 function buddymeet_get_name() {
-    $name = isset( buddypress()->pages->buddymeet->slug ) ? buddypress()->pages->buddymeet->title : buddymeet()->buddymeet_name ;
+    $name = function_exists( 'buddypress' ) && isset( buddypress()->pages->buddymeet->slug ) ?
+        buddypress()->pages->buddymeet->title : buddymeet()->buddymeet_name ;
 
     return apply_filters( 'buddymeet_get_name', $name );
 }
@@ -79,20 +81,10 @@ function buddymeet_get_plugin_url() {
  * @uses bp_core_update_directory_page_ids() to update the BuddyPres component pages ids
  */
 function buddymeet_activation() {
-	// For network, as plugin is not yet activated, bail method won't help..
-	if ( is_network_admin() && function_exists( 'buddypress' ) ) {
-	    $action = isset($_REQUEST['action']) ? sanitize_text_field($_REQUEST['action']) : null;
-	    $plugin = isset($_REQUEST['plugin']) ? sanitize_text_field($_REQUEST['plugin']) : null;
-		$check =  $action === 'activate' && $plugin == buddymeet()->basename && bp_is_network_activated() && buddymeet::version_check();
-	} else {
-		$check = ! buddymeet::bail();
-	}
-
-	if ( empty( $check ) ) {
-        return;
+    if(function_exists('buddypress')) {
+        buddymeet_register_custom_email_templates();
     }
 
-    buddymeet_register_custom_email_templates();
     update_option('_buddymeet_enabled', true);
 
     do_action( 'buddymeet_activation' );
@@ -102,11 +94,7 @@ function buddymeet_activation() {
  * Handles plugin deactivation
  */
 function buddymeet_deactivation() {
-	// Bail if config does not match what we need
-	if ( buddymeet::bail() )
-		return;
-
-    update_option('_buddymeet_enabled', false);
+	update_option('_buddymeet_enabled', false);
 
 	do_action( 'buddymeet_deactivation' );
 }
@@ -147,6 +135,8 @@ function buddymeet_default_settings(){
         'default_language' => 'en',
         'background_color' => '#464646',
         'show_watermark' => true,
+        'show_brand_watermark' => false,
+        'brand_watermark_link' => '',
         'settings' => 'devices,language',
         'disable_video_quality_label' => false,
         'toolbar' => 'microphone,camera,hangup,desktop,fullscreen,profile,chat,recording,settings,raisehand,videoquality,tileview'
@@ -184,6 +174,7 @@ function buddymeet_get_current_user_room(){
     $group_id = bp_get_group_id();
     $user_id = get_current_user_id();
     $room_id = buddymeet_get_current_user_room_from_path();
+
     if($room_id){
         return buddymeet_get_user_room_info($group_id, $user_id, $room_id);
     }
@@ -193,9 +184,9 @@ function buddymeet_get_current_user_room(){
 function buddymeet_get_current_user_room_from_path(){
     global $wp;
 
-    $path_params = array_keys($wp->query_vars);
-    if(count($path_params) > 3) {
-        return $path_params[2];
+    $path_params = explode('members/', wp_parse_url($wp->request)['path']);
+    if(count($path_params) > 1) {
+        return $path_params[1];
     }
     return false;
 }
@@ -318,6 +309,8 @@ function buddymeet_render_jitsi_meet($room = null, $subject = null){
     $default_language =  groups_get_groupmeta( $group_id, 'buddymeet_default_language', true);
     $background_color =  groups_get_groupmeta( $group_id, 'buddymeet_background_color', true);
     $show_watermark =  groups_get_groupmeta( $group_id, 'buddymeet_show_watermark', true)  === '1' ? 'true' : 'false';
+    $show_brand_watermark =  groups_get_groupmeta( $group_id, 'buddymeet_show_brand_watermark', true)  === '1' ? 'true' : 'false';
+    $brand_watermark_link =  groups_get_groupmeta( $group_id, 'buddymeet_brand_watermark_link', true);
     $disable_video_quality_label =  groups_get_groupmeta( $group_id, 'buddymeet_disable_video_quality_label', true) === '1' ? 'true' : 'false';
     $settings =  groups_get_groupmeta( $group_id, 'buddymeet_settings', true);
     $toolbar =  groups_get_groupmeta( $group_id, 'buddymeet_toolbar', true);
@@ -336,6 +329,8 @@ function buddymeet_render_jitsi_meet($room = null, $subject = null){
             default_language = "' . $default_language . '"
             background_color = "' . $background_color . '"
             show_watermark = "' . $show_watermark . '"
+            show_brand_watermark = "' . $show_brand_watermark . '"
+            brand_watermark_link = "' . $brand_watermark_link . '"
             disable_video_quality_label = "' . $disable_video_quality_label . '"
             settings = "' . $settings . '"
             toolbar = "' . $toolbar . '"

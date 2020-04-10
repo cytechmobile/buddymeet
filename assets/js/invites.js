@@ -1,4 +1,7 @@
 jQuery(document).ready( function() {
+	const ajaxurl = args.ajaxurl;
+	console.log(ajaxurl);
+
 	const room = jQuery('#room').val();
 	let initializeMeet = room === '' || room === undefined;
 	const group_id = jQuery("input#group_id").val();
@@ -30,7 +33,7 @@ jQuery(document).ready( function() {
 
 	});
 
-	jQuery('#send-invite-form #submit').on( 'click', function(e) {
+	jQuery('#send-invite-form #sendInviteButton').on( 'click', function(e) {
 		const users = [];
 
 		jQuery('#meet-invite-list').find('li').each(function(index,value) {
@@ -83,7 +86,6 @@ jQuery(document).ready( function() {
 		e.preventDefault();
 	});
 
-
 	jQuery('#room_name').on( 'keyup', function(e) {
 		buddymeet_refresh_buttons_state();
 	});
@@ -92,35 +94,62 @@ jQuery(document).ready( function() {
 
 	function autocomplete(room){
 		const options = {
-			serviceUrl: ajaxurl,
-			width: 300,
-			delimiter: /(,|;)\s*/,
-			onSelect: buddymeet_on_autocomplete_select,
-			deferRequestBy: 500,
-			params: { action: 'members_autocomplete', room:  room},
-			noCache: true //set to true, to disable caching
+			minLength: 3,
+			select: buddymeet_on_autocomplete_select,
+			source: function( request, response ) {
+				jQuery('#send-to-input').addClass('autocomplete-loading');
+
+				const data =  {
+					'action': 'members_autocomplete',
+					'_wpnonce': jQuery("input#_wpnonce_members_autocomplete").val(),
+					'term':  request.term,
+					'room': room
+				};
+
+				jQuery.ajax({
+					type: "POST",
+					url: ajaxurl,
+					data: data,
+					success: function(data){
+						jQuery('#send-to-input').removeClass('autocomplete-loading');
+						if(data){
+							response(JSON.parse(data));
+						}
+					},
+					error: function(data){}
+				});
+			}
 		};
 
-		jQuery('#send-invite-form #send-to-input').autocomplete(options);
+		jQuery('#send-to-input').autocomplete(options).autocomplete( "instance" )
+			._renderItem = function( ul, item ) {
+			return jQuery( "<li>" )
+				.append( "<div>" + item.label + "</div>" )
+				.appendTo( ul );
+		};
 	}
 
-	function buddymeet_on_autocomplete_select(value, data ) {
+	function buddymeet_on_autocomplete_select( event, ui) {
+		const member_id = ui.item.value;
 		// Put the item in the invite list
-		jQuery('div.item-list-tabs li.selected').addClass('loading');
+		jQuery('#send-to-input').addClass('autocomplete-loading');
 
-		jQuery.post( ajaxurl, {
-				action: 'members_add_to_invite_list',
-				'member_action': 'add_invite',
-				'_wpnonce': jQuery("input#_wpnonce_members_add_invite").val(),
-				'member_id': data,
-				'group_id': group_id
-			},
-			function(response) {
+		const data =  {
+			'action': 'members_add_to_invite_list',
+			'_wpnonce': jQuery("input#_wpnonce_members_add_invite").val(),
+			'member_id': member_id,
+			'group_id': group_id
+		};
+
+		jQuery.ajax({
+			type: "POST",
+			url: ajaxurl,
+			data: data,
+			success: function(response){
 				jQuery('.ajax-loader').toggle();
 
-				if ( '0' !== response ) {
+				if(response) {
 					jQuery('#meet-invite-list').append(response);
-					jQuery("#message").hide();
 
 					jQuery('.action a').click(function(){
 						jQuery(this).closest('li').remove();
@@ -128,14 +157,19 @@ jQuery(document).ready( function() {
 					});
 				}
 
-				jQuery('div.item-list-tabs li.selected').removeClass('loading');
+				jQuery('#send-to-input').removeClass('autocomplete-loading');
 
 				// Refresh the submit button state
 				buddymeet_refresh_buttons_state();
-			});
+			},
+			error: function(data){
+			}
+		});
 
-		// Remove the value from the send-to-input box
-		jQuery('#send-to-input').val('');
+		// Remove the value from the input element
+		jQuery('#edit-task-assign-to').val('');
+
+		return false;
 	}
 
 	function buddymeet_refresh_buttons_state(){
@@ -144,9 +178,9 @@ jQuery(document).ready( function() {
 		const roomName = jQuery( '#room_name' ).val();
 		const hasRoomName = roomName !== '' && roomName !== undefined;
 		if ( hasInvites  && hasRoomName) {
-			jQuery( '#submit' ).prop( 'disabled', false ).removeClass( 'submit-disabled' );
+			jQuery( '#send-invite-form #sendInviteButton' ).prop( 'disabled', false ).removeClass( 'submit-disabled' );
 		} else {
-			jQuery( '#submit' ).prop( 'disabled', true ).addClass( 'submit-disabled' );
+			jQuery( '#send-invite-form #sendInviteButton' ).prop( 'disabled', true ).addClass( 'submit-disabled' );
 		}
 
 		if(typeof(api) != "undefined"){

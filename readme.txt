@@ -2,9 +2,9 @@
 Contributors: tdakanalis
 Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
-Tested up to: 5.3.2
+Tested up to: 5.4
 Requires PHP: 5.3
-Stable tag: 1.0.0
+Stable tag: 1.6.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,8 @@ Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HE
 * subject: The subject of the room. If empty the room is being displayed as the subject.
 * password: A password for the room. The first to enter the room sets that password and all other participants have to put it to enter.
 * show_watermark: Whether to show the Jitsi.org watermark or not.
+* show_brand_watermark: Whether to show a custom branded watermark or not.
+* brand_watermark_link: the custom brand watermark to show.
 * width: The width of the embedded window.
 * height: The height of the embedded window.
 * start_audio_only: Start the meet with the microphone only enabled and the camera off.
@@ -81,6 +83,22 @@ BuddyMeet is mainly a BuddyPress plugins. It actually extends the BuddyPress Gro
 
 That functionality is accessible only from inside a BuddyPress Group. For more information please check the previous FAQ entry.
 
+= Is it compatible with my theme? =
+
+If you experience any UI issues you can override the templates of the plugin by copying the templates/group folder to your theme and then customizing them as you wish.
+
+= JitsiMeetExternalAPI is not defined  =
+
+If you get the above error please check if your site uses the "Rocket Loader" CloudFlare service. In that case you have to add - via your CloudFlare dashboard - a page rule with the setting "Rocket Loader". That will disable the service for the page that reports the error. For more information on how to add a page rule check [here](https://support.cloudflare.com/hc/en-us/articles/218411427).
+
+= I activated BudddyMeet and BuddyPress but I cannot see anything =
+
+Please ensure that you have followed all instructions to properly setup BuddyPress (e.g. you have changed the default WordPress permalink settings). Also make sure that you have enabled the "Groups" component via the BuddyPress settings. After that create a group and in the creation wizard make sure you enabled BuddyMeet for that group.
+
+= Branded watermark is not displayed =
+
+Please note that this setting can only be used if you have set up your own Jitsi Meet server installation.
+
 == Screenshots ==
 
 1. BuddyMeet settings page
@@ -94,9 +112,31 @@ That functionality is accessible only from inside a BuddyPress Group. For more i
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.6.0 =
 
-* Initial version of the plugin
+* Added the missing legacy/home.php file
+
+= 1.5.0 =
+
+* Added support for BuddyPress themes that are based on the Legacy theme pack (and not on the Nouveau theme pack).
+* Fixed the issue of disabling buttons that co-exist in the same page with the buddymeet short code
+* Updated the pot file with all missing translations
+
+= 1.4.0 =
+
+* Added the show_brand_watermark and brand_watermark_link settings. You can now set a branded watermark if you use your own Jitsi Meet server.
+* Fixed the activation process of the plugin
+* Updated the autocomplete logic to use the built-in autocomplete script of the WordPress
+* Updated the FAQ
+
+= 1.3.0 =
+
+* Fixed some Notice: Undefined index errors
+
+= 1.2.0 =
+
+* Major fix of the "Call to undefined function is_plugin_active" an issue that caused the plugin to break the WP Frontend
+* Changed the default templates of the plugin to be compatible with the TwentyTwenty theme
 
 = 1.1.0 =
 
@@ -104,6 +144,16 @@ That functionality is accessible only from inside a BuddyPress Group. For more i
 * Added documentation about the configuration parameters of the [buddymeet] short code
 * Updated the FAQ
 
+= 1.0.0 =
+
+* Initial version of the plugin
+
 == Upgrade Notice ==
 
-Nothing
+= 1.5.0 =
+
+* In case you had overridden the templates of the plugin you might now have to move the home.php file under a legacy folder.
+
+= 1.2.0 =
+
+* After the update of the plugin to this version you need to deactivate and reactivate the plugin

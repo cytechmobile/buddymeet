@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 1.1.0
+Version: 1.6.0
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -84,7 +84,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '1.0.0';
+		$this->version    = '1.6.0';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
@@ -179,7 +179,7 @@ class BuddyMeet {
 	}
 
     public function enqueue_styles(){
-        if(is_plugin_active('buddypress/bp-loader.php')) {
+        if(function_exists( 'buddypress' )) {
             global $bp;
             if (buddymeet_get_slug() === $bp->current_action) {
                 $sub_action = buddymeet_get_current_action();
@@ -206,8 +206,11 @@ class BuddyMeet {
         }
 
         if($load_scripts){
-            wp_enqueue_script( 'buddymeet-jquery-autocomplete-js', buddymeet_get_plugin_url() . "assets/js/jquery.autocomplete-min.js", array( 'jquery' ) );
-            wp_enqueue_script( 'buddymeet-invites-js', buddymeet_get_plugin_url()  . 'assets/js/invites.js', array( 'buddymeet-jquery-autocomplete-js' ) );
+            wp_enqueue_script('jquery-ui-autocomplete');
+            wp_enqueue_script( 'buddymeet-invites-js', buddymeet_get_plugin_url()  . 'assets/js/invites.js', array( 'jquery-ui-autocomplete' ) );
+            wp_localize_script('buddymeet-invites-js', 'args', array(
+                'ajaxurl' =>  admin_url( 'admin-ajax.php', 'relative' )
+            ));
 
             $handle = 'buddymeet-jitsi-js';
             wp_enqueue_script( $handle, "https://meet.jit.si/external_api.js", array(), buddymeet_get_version(), true);
@@ -384,7 +387,6 @@ class BuddyMeet {
     public function add_shortcode($params) {
         $params = apply_filters('buddymeet_custom_settings', $params);
         $params = wp_parse_args($params, buddymeet_default_settings());
-
         $script = sprintf(
             $this->get_jitsi_init_template(),
             $params['domain'],
@@ -399,11 +401,13 @@ class BuddyMeet {
             $params['film_strip_only'] === "true" || $params['film_strip_only'] === true? 1 : 0,
             $params['background_color'],
             $params['show_watermark'] === "true" || $params['show_watermark'] === true? 1 : 0,
+            $params['show_brand_watermark'] === "true" || $params['show_brand_watermark'] === true? 1 : 0,
+            $params['brand_watermark_link'],
             $params['disable_video_quality_label'] === "true" || $params['disable_video_quality_label'] === true ? 1 : 0,
-            $params['user'],
+            isset($params['user']) ? $params['user'] : '',
             $params['subject'],
-            $params['avatar'],
-            $params['password']
+            isset($params['avatar']) ? $params['avatar'] : '',
+            isset($params['password']) ? $params['password'] : ''
         );
 
         if(wp_doing_ajax()){
@@ -437,19 +441,21 @@ class BuddyMeet {
                     DEFAULT_REMOTE_DISPLAY_NAME: "",
                     SHOW_JITSI_WATERMARK: %12$b === 1,
                     SHOW_WATERMARK_FOR_GUESTS: %12$b === 1,
+                    SHOW_BRAND_WATERMARK: %13$b === 1,
+                    BRAND_WATERMARK_LINK: "%14$s",
                     LANG_DETECTION: true,
                     CONNECTION_INDICATOR_DISABLED: false,
-                    VIDEO_QUALITY_LABEL_DISABLED: %13$b === 1,
+                    VIDEO_QUALITY_LABEL_DISABLED: %15$b === 1,
                     SETTINGS_SECTIONS: settings.split(","),
                     TOOLBAR_BUTTONS: toolbar.split(","),
                 },
             };
             const api = new JitsiMeetExternalAPI(domain, options);
-            api.executeCommand("displayName", "%14$s");
-            api.executeCommand("subject", "%15$s");
-            api.executeCommand("avatarUrl", "%16$s");
+            api.executeCommand("displayName", "%16$s");
+            api.executeCommand("subject", "%17$s");
+            api.executeCommand("avatarUrl", "%18$s");
             api.addEventListener("videoConferenceJoined", function(event){
-                api.executeCommand("password", "%17$s");
+                api.executeCommand("password", "%19$s");
             });
 
             window.api = api;';

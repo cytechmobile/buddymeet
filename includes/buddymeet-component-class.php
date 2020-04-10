@@ -138,10 +138,12 @@ class BuddyMeet_Component extends BP_Component {
     }
 
     public function members_autocomplete() {
+        check_ajax_referer( 'buddymeet_members_autocomplete' );
+
         global $bp;
 
         $group_id = absint($bp->groups->current_group->id);
-        $search_terms =  isset($_REQUEST['query']) ? sanitize_text_field($_REQUEST['query']) : null;
+        $search_terms =  isset($_REQUEST['term']) ? sanitize_text_field($_REQUEST['term']) : null;
         $room =   isset($_REQUEST['room']) ? sanitize_text_field($_REQUEST['room']) : null;
 
         $args = array(
@@ -158,53 +160,42 @@ class BuddyMeet_Component extends BP_Component {
         if($room_members){
             $exclude = array_unique(array_merge($exclude, $room_members));
         }
-        $args['exclude'] = $exclude;
 
+        $suggestions = array();
         $group_members = groups_get_group_members( $args );
-        $return = array(
-            'query' 	=> $search_terms,
-            'data' 		=> array(),
-            'suggestions' 	=> array()
-        );
-
         if($group_members && !empty($group_members)) {
-            $suggestions = array();
-            $data 	     = array();
-
             foreach ( $group_members['members'] as $user ) {
-                $suggestions[] 	= $user->display_name . ' (' . $user->user_login . ')';
-                $data[] 	= $user->ID;
+                if(!in_array($user->ID, $exclude)) {
+                    $suggestions[] = array(
+                        'value' => $user->ID,
+                        'label' => $user->display_name . ' (' . $user->user_login . ')'
+                    );
+                }
             }
-
-            $return['suggestions'] = $suggestions;
-            $return['data']	       = $data;
         }
 
-        die(json_encode( $return ));
+        die(json_encode( $suggestions ));
     }
 
     public function members_add_to_invite_list() {
         check_ajax_referer( 'buddymeet_members_add_invite' );
 
         $member_id = isset($_POST['member_id']) && is_numeric($_POST['member_id']) ? absint($_POST['member_id']) : null;
-        $member_action = isset($_POST['member_action']) ? sanitize_text_field($_POST['member_action']) : null;
         $group_id = isset($_POST['group_id']) && is_numeric($_POST['group_id']) ? absint($_POST['group_id']) : null;
 
-        if (is_null($member_id)|| is_null($member_action) || is_null($group_id)){
+        if (is_null($member_id)|| is_null($group_id)){
             return false;
         }
 
-        if ($member_action === 'add_invite') {
-            $user = new BP_Core_User($member_id);
-            echo sprintf(
-                $this->get_invite_list_entry_template(),
-                esc_attr($user->id),
-                bp_core_fetch_avatar(array( 'item_id' => $user->id )),
-                bp_core_get_userlink($user->id),
-                esc_html($user->last_active),
-                esc_html__('Remove Invite', 'buddymeet')
-            );
-        }
+        $user = new BP_Core_User($member_id);
+        echo sprintf(
+            $this->get_invite_list_entry_template(),
+            esc_attr($user->id),
+            bp_core_fetch_avatar(array( 'item_id' => $user->id )),
+            bp_core_get_userlink($user->id),
+            esc_html($user->last_active),
+            esc_html__('Remove Invite', 'buddymeet')
+        );
 
         die();
     }
@@ -328,7 +319,7 @@ class BuddyMeet_Component extends BP_Component {
     }
 
     public function get_invite_list_entry_template(){
-        return '<li id="uid-%1$s">
+        return '<li id="uid-%1$s" class="nobullet">
                     %2$s
                     <h4>%3$s</h4>
                     <span class="activity">%4$s</span>

@@ -117,7 +117,9 @@ class BuddyMeet_Group extends BP_Group_Extension {
 
             $enabled = buddymeet_is_enabled($bp->groups->current_group->id);
             if ( $enabled == 1 ) {
-                $this->get_groups_template_part( 'buddymeet/home' );
+                $is_bp_nouveau = function_exists('bp_nouveau_single_item_subnav_classes');
+                $home = $is_bp_nouveau ? 'buddymeet/home' : 'buddymeet/legacy/home';
+                $this->get_groups_template_part( $home );
             }
         } else {
             echo '<div id="message" class="error"><p>'.__('This content is only available to group members.', 'buddymeet').'</p></div>';
@@ -152,6 +154,8 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 $background_color =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_background_color',  $defaults['background_color']);
                 $default_language =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_default_language',  $defaults['default_language']);
                 $show_watermark =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_show_watermark',  $defaults['show_watermark']);
+                $show_brand_watermark =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_show_brand_watermark',  $defaults['show_brand_watermark']);
+                $brand_watermark_link =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_brand_watermark_link',  $defaults['brand_watermark_link']);
                 $film_strip_only =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_film_strip_only',  $defaults['film_strip_only']);
                 $start_audio_only =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_start_audio_only',  $defaults['start_audio_only']);
                 $disable_video_quality_label =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_disable_video_quality_label',  $defaults['disable_video_quality_label']);
@@ -246,6 +250,23 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 </div>
                 <?php endif; ?>
 
+                <?php if(in_array('show_brand_watermark', $display_settings)): ?>
+                    <div class="field-group">
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="buddymeet_show_brand_watermark" value="1" <?php checked( (bool) $show_brand_watermark)?>> <?php _e( 'Show Brand Watermark', 'buddymeet' ); ?></label>
+                        </div>
+                        <p class="description"><?php esc_html_e( 'Show/Hide the Jitsi Meet Brand watermark.', 'buddymeet' ); ?></p>
+                    </div>
+                <?php endif; ?>
+
+                <?php if(in_array('brand_watermark_link', $display_settings)): ?>
+                    <div class="field-group">
+                        <label><?php _e( 'Brand Watermark Link', 'buddymeet' ); ?></label>
+                        <input type="text" name="buddymeet_brand_watermark_link" id="buddymeet_brand_watermark_link" value="<?php  echo esc_url($brand_watermark_link); ?>"/>
+                        <p class="description"><?php esc_html_e( 'The link for the brand watermark.', 'buddymeet' ); ?></p>
+                    </div>
+                <?php endif; ?>
+
                 <?php if(in_array('film_strip_only', $display_settings)): ?>
                 <div class="field-group">
                     <div class="checkbox">
@@ -292,13 +313,15 @@ class BuddyMeet_Group extends BP_Group_Extension {
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_background_color', $defaults['background_color'] );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_default_language', $defaults['default_language'] );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_show_watermark', "0" );
+        buddymeet_groups_update_groupmeta($group_id, 'buddymeet_show_brand_watermark', "0" );
+        buddymeet_groups_update_groupmeta($group_id, 'buddymeet_brand_watermark_link', "" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_film_strip_only', "0" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_start_audio_only', "0" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_disable_video_quality_label', "0" );
     }
 
     function get_groups_template_part( $slug ) {
-        add_filter( 'bp_locate_template_and_load', '__return_true'                        );
+        add_filter( 'bp_locate_template_and_load', '__return_true');
         add_filter( 'bp_get_template_stack', array($this, 'set_template_stack'), 10, 1 );
 
         bp_get_template_part( 'groups/single/' . $slug );
