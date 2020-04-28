@@ -97,7 +97,7 @@ class BuddyMeet_Component extends BP_Component {
         global $groups_template;
 
         if ( bp_is_groups_component() && bp_is_single_item() ) {
-            $group = ($groups_template->group) ? $groups_template->group : groups_get_current_group();
+            $group = ! empty( $groups_template->group ) ? $groups_template->group : groups_get_current_group();
             $group_link = bp_get_group_permalink( $group );
             $slug = buddymeet_get_slug();
             $budddymeet_link = trailingslashit($group_link . '/' . $slug);
