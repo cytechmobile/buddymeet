@@ -18,13 +18,13 @@ $current_room = buddymeet_get_current_user_room_from_path();
                     <label for="active-rooms"></label>
                     <select id="active-rooms">
                         <option value=""><?php _e('Select a room', 'buddymeet') ?></option>
-                        <?if(is_array($user_rooms)): ?>
+                        <?php if(is_array($user_rooms)) :?>
                             <?php foreach ($user_rooms as $user_room) :?>
                                 <option value="<?php esc_attr_e($user_room['id'])?>" <?php esc_attr_e(($current_room && $user_room['id'] === $current_room) ? 'selected' : '')?>>
                                     <?php esc_html_e($user_room['name']);?>
                                 </option>
                             <?php endforeach;?>
-                        <?php endif; ?>
+                        <?php endif;?>
                         <?php do_action( 'buddymeet_group_rooms_filter_options' ); ?>
                     </select>
                 </li>
