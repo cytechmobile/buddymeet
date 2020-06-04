@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 1.6.0
+Version: 1.7.3
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -84,7 +84,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '1.6.0';
+		$this->version    = '1.7.3';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
@@ -145,6 +145,8 @@ class BuddyMeet {
 
         add_action( 'bp_setup_nav', array($this, 'set_default_groups_nav'), 20 );
 
+        add_filter( 'buddymeet_custom_settings', array($this, 'buddymeet_post_settings'), 9 );
+
         add_shortcode( 'buddymeet', array($this, 'add_shortcode'));
 
 		do_action_ref_array( 'buddymeet_after_setup_actions', array( &$this ) );
@@ -189,11 +191,13 @@ class BuddyMeet {
                 }
             }
         }
+
+        wp_enqueue_style('buddymeet-css', buddymeet_get_plugin_url() . "assets/css/buddymeet.css", '', buddymeet_get_version(), 'screen');
     }
 
     public function enqueue_scripts(){
         $load_scripts = false;
-        if(is_page()){
+        if(is_page() || is_single()){
             $post = get_post();
             if($post && has_shortcode($post->post_content, buddymeet_get_slug())){
                 $load_scripts = true;
@@ -385,8 +389,11 @@ class BuddyMeet {
      * @param $params
      */
     public function add_shortcode($params) {
+        global $wp;
         $params = apply_filters('buddymeet_custom_settings', $params);
         $params = wp_parse_args($params, buddymeet_default_settings());
+        $hangoutMessage = __("The video call has been ended.", "buddymeet");
+
         $script = sprintf(
             $this->get_jitsi_init_template(),
             $params['domain'],
@@ -407,7 +414,8 @@ class BuddyMeet {
             isset($params['user']) ? $params['user'] : '',
             $params['subject'],
             isset($params['avatar']) ? $params['avatar'] : '',
-            isset($params['password']) ? $params['password'] : ''
+            isset($params['password']) ? $params['password'] : '',
+            $hangoutMessage
         );
 
         if(wp_doing_ajax()){
@@ -454,11 +462,35 @@ class BuddyMeet {
             api.executeCommand("displayName", "%16$s");
             api.executeCommand("subject", "%17$s");
             api.executeCommand("avatarUrl", "%18$s");
-            api.addEventListener("videoConferenceJoined", function(event){
+            api.on("videoConferenceJoined", () => {
                 api.executeCommand("password", "%19$s");
+            });
+            api.on("readyToClose", () => {
+                 api.dispose();
+                 jQuery("#meet").addClass("hangoutMessage").html("%20$s");
             });
 
             window.api = api;';
+    }
+
+    public function buddymeet_post_settings($settings){
+        $extra = array();
+        if(is_page() || is_single()) {
+            $post = get_post();
+            if ($post && has_shortcode($post->post_content, buddymeet_get_slug())) {
+                $user = wp_get_current_user();
+                if($user->exists()) {
+                    if (!array_key_exists('user', $settings)) {
+                        $extra['user'] = $user->display_name;
+                    }
+                    if (!array_key_exists('avatar', $settings)) {
+                        $extra['avatar'] = get_avatar_url($user->ID);
+                    }
+                }
+            }
+        }
+
+        return wp_parse_args($extra, $settings);
     }
 }
 

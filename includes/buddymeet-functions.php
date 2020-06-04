@@ -125,8 +125,10 @@ add_action( 'buddymeet_admin_init', 'buddymeet_check_version' );
 function buddymeet_default_settings(){
     return array(
         'enabled' => true,
+        'meet_members_enabled' => true,
         'room' => '',
         'domain' => 'meet.jit.si',
+        'password' => '',
         'film_strip_only' => false,
         'width' => '100%',
         'height' => 700,
@@ -278,6 +280,15 @@ function buddymeet_get_user_room_info($group_id, $user_id, $room_id){
     return false;
 }
 
+function buddymeet_is_meet_members_enabled($group_id = false){
+    if($group_id){
+        $enabled = groups_get_groupmeta($group_id, 'buddymeet_meet_members_enabled', true);
+    } else {
+        $enabled = false;
+    }
+    return $enabled;
+}
+
 function buddymeet_render_jitsi_meet($room = null, $subject = null){
     if(!bp_is_group_single()){
        return;
@@ -296,7 +307,7 @@ function buddymeet_render_jitsi_meet($room = null, $subject = null){
     }
 
     $user_name = esc_js($bp->loggedin_user->userdata->display_name);
-    $avatar_url = esc_js(bp_get_loggedin_user_avatar( 'html=false' ));
+    $avatar_url = esc_js(get_avatar_url($bp->loggedin_user->userdata->ID));
 
     //apply group settings
     $password = groups_get_groupmeta( $group_id, 'buddymeet_password', true);

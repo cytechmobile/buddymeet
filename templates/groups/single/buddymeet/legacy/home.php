@@ -2,12 +2,16 @@
 $action = buddymeet_get_current_action();
 $user_id = get_current_user_id();
 $group_id = bp_get_group_id();
+$display_meet_members = buddymeet_is_meet_members_enabled($group_id);
+if(!$display_meet_members){
+    $action = 'group';
+}
 $user_rooms = buddymeet_get_user_rooms($group_id, $user_id);
 $current_room = buddymeet_get_current_user_room_from_path();
 ?>
     <div class="item-list-tabs no-ajax" id="subnav" aria-label="<?php esc_attr_e( 'BuddyMeet secondary navigation', 'buddymeet' ); ?>" role="navigation">
         <ul>
-            <?php bp_get_options_nav(buddymeet_get_slug()); ?>
+             <?php $display_meet_members ? bp_get_options_nav(buddymeet_get_slug()) : ''; ?>
 
             <?php if($action !== 'group') :?>
                 <li id="room-filter-select" class="last">

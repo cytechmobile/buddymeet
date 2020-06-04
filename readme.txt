@@ -1,10 +1,11 @@
 === BuddyMeet ===
 Contributors: tdakanalis
+Donate link: https://www.paypal.me/tdakanalis
 Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
-Tested up to: 5.4
+Tested up to: 5.4.1
 Requires PHP: 5.3
-Stable tag: 1.6.0
+Stable tag: 1.7.3
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +34,8 @@ Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HE
 * start_audio_only: Start the meet with the microphone only enabled and the camera off.
 * film_strip_only: Start the meet in film strip only mode.
 * disable_video_quality_label: Disable the video quality indicator.
-* user: The user to display
-* avatar: The url with the avatar to display
+* user: The user to display. Leave empty to automatically set the display name of the logged in user.
+* avatar: The url with the avatar to display. Leave empty to automatically set the avatar of the logged in user.
 * settings: A csv with the Jitsi Meet settings to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57)
 * toolbar: A csv with the Jitsi Meet toolbar options to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49).
 * background_color: The background color of the window
@@ -112,6 +113,29 @@ Please note that this setting can only be used if you have set up your own Jitsi
 
 == Changelog ==
 
+= 1.7.3 =
+
+* Added an information message to let user know the call has been ended.
+* Fixed a php warning when rendering the rooms a users has created.
+
+= 1.7.2 =
+
+* Fixed a small issue when the user hangs out the meet.
+
+= 1.7.1 =
+
+* Added a donation button to support the development effort.
+
+= 1.7.0 =
+
+* Updated the short code to work inside single posts
+* Updated the short code to automatically set the user and avatar parameters when the user is logged in
+* Updated the default settings to display the mistakenly removed password setting
+* Added a listener to handle the hangs out event
+* Added an extra option to hide/show the 'Meet Member' menu. When disabled, the submenu is not displayed and the users enter immediately the group room.
+* Fixed various PHP warnings
+* Added missing translations
+
 = 1.6.0 =
 
 * Added the missing legacy/home.php file
@@ -150,9 +174,9 @@ Please note that this setting can only be used if you have set up your own Jitsi
 
 == Upgrade Notice ==
 
-= 1.5.0 =
+= 1.5.0 ==
 
-* In case you had overridden the templates of the plugin you might now have to move the home.php file under a legacy folder.
+In case you had overridden the templates of the plugin you might now have to move the home.php file under a legacy folder.
 
 = 1.2.0 =
 

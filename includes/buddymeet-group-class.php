@@ -24,7 +24,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
         }
 
         $args = array(
-            'name' => buddymeet_get_name(),
+            'name' => __( buddymeet_get_name(), 'buddymeet' ),
             'slug' => buddymeet_get_slug(),
             'nav_item_position' => 40,
             'enable_nav_item' =>  $enabled
@@ -136,12 +136,13 @@ class BuddyMeet_Group extends BP_Group_Extension {
 
         ?>
         <div class="wrap">
-            <h4><?php _e( buddymeet_get_name() . ' Settings', 'buddymeet' ) ?></h4>
+            <h4><?php printf( esc_html__( '%s Settings', 'buddymeet' ), buddymeet_get_name() ); ?></h4>
 
             <fieldset>
                 <p><?php _e( 'Allow members of this group to enter the same video conference room.', 'buddymeet' ); ?></p>
                 <?php
                 $enabled = $is_create ? $defaults['enabled'] : buddymeet_is_enabled($group_id);
+                $meet_members_enabled =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_meet_members_enabled',  $defaults['meet_members_enabled']);
 
                 //if there is not any room set up create a uuid
                 $room = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_room', wp_generate_uuid4());
@@ -165,6 +166,9 @@ class BuddyMeet_Group extends BP_Group_Extension {
                     <div class="checkbox">
                         <label><input type="checkbox" name="buddymeet_enabled" value="1" <?php checked( (bool) $enabled )?>> <?php _e( 'Activate', 'buddymeet' ); ?></label>
                     </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="buddymeet_meet_members_enabled" value="1" <?php checked( (bool) $meet_members_enabled )?>> <?php _e( "Display 'Meet Members' menu", 'buddymeet' ); ?></label>
+                    </div>
                 </div>
 
                 <?php if(in_array('domain', $display_settings)): ?>
@@ -179,7 +183,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <div class="field-group">
                         <label><?php _e( 'Room', 'buddymeet' ); ?></label>
                         <input type="text" name="buddymeet_room" id="buddymeet_room" value="<?php esc_attr_e($room); ?>"/>
-                        <p class="description"><?php esc_html_e( 'Set the room group members will enter automatically when visiting the ' .buddymeet_get_name(). ' menu.', 'buddymeet' ); ?></p>
+                        <p class="description"><?php esc_html_e( "Set the room group members will enter automatically when visiting the 'Meet the Group' menu", 'buddymeet' ); ?></p>
                 </div>
                 <?php else: ?>
                     <input type="hidden" name="buddymeet_room" value="<?php esc_attr_e($room); ?>"/>
@@ -303,6 +307,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
         $defaults = buddymeet_default_settings();
 
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_enabled', "0");
+        buddymeet_groups_update_groupmeta($group_id, 'buddymeet_meet_members_enabled', "0" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_room', '');
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_password', '');
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_domain', $defaults['domain'] );

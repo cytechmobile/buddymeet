@@ -110,7 +110,7 @@ msgid "This content is only available to group members."
 msgstr ""
 
 #: includes/buddymeet-group-class.php:137
-msgid " Settings"
+msgid "%s Settings"
 msgstr ""
 
 #: includes/buddymeet-group-class.php:140
@@ -134,7 +134,7 @@ msgid "Room"
 msgstr ""
 
 #: includes/buddymeet-group-class.php:180
-msgid "Set the room group members will enter automatically when visiting the "
+msgid "Set the room group members will enter automatically when visiting the 'Meet the Group' menu"
 msgstr ""
 
 #: includes/buddymeet-group-class.php:188
@@ -271,4 +271,16 @@ msgstr ""
 
 #: templates/groups/single/buddymeet/members.php:35
 msgid "Send Invites"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:27
+msgid "BuddyMeet"
+msgstr ""
+
+#: includes/buddymeet-group-class.php:169
+msgid "Display 'Meet Members' menu"
+msgstr ""
+
+#: includes/buddymeet.php:468
+msgid "The video call has been ended."
 msgstr ""
