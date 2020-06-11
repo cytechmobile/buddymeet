@@ -145,7 +145,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 $meet_members_enabled =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_meet_members_enabled',  $defaults['meet_members_enabled']);
 
                 //if there is not any room set up create a uuid
-                $room = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_room', wp_generate_uuid4());
+                $room = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_room', buddymeet_generate_unique_room());
                 $password = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_password', '');
                 $domain =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_domain', $defaults['domain']);
                 $toolbar =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_toolbar',  $defaults['toolbar']);

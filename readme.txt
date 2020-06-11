@@ -3,9 +3,9 @@ Contributors: tdakanalis
 Donate link: https://www.paypal.me/tdakanalis
 Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Requires PHP: 5.3
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,10 @@ Please note that this setting can only be used if you have set up your own Jitsi
 8. Switch among different rooms you have been invited into
 
 == Changelog ==
+
+= 1.7.5 =
+
+* Changed the format of the room names to alphanumeric ones so that they are compatible with the default Apache's rewrite rules when runing a Jitsi Meet instance with Apache as the web server.
 
 = 1.7.4 =
 

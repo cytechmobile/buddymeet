@@ -332,7 +332,7 @@ class BuddyMeet_Component extends BP_Component {
     public function add_users_to_room($group_id, $users, $room_id = null, $room_name = null){
         //Add the room in the rooms list of each user
         $room =  array(
-            'id' => $room_id === null ? wp_generate_uuid4() : $room_id,
+            'id' => $room_id === null ? buddymeet_generate_unique_room() : $room_id,
             'name' => $room_name === null ? sprintf(__('Room %s'), time()) : $room_name
         );
 

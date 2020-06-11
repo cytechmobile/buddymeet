@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 1.7.4
+Version: 1.7.5
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -84,7 +84,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '1.7.4';
+		$this->version    = '1.7.5';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
