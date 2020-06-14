@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 1.7.5
+Version: 1.8.0
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -84,7 +84,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '1.7.5';
+		$this->version    = '1.8.0';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
@@ -431,7 +431,8 @@ class BuddyMeet {
     }
 
     public function get_jitsi_init_template(){
-        return 'const domain = "%1$s";
+        return 'const public_domain = "meet.jit.si";
+            const domain = "%1$s";
             const settings = "%2$s"; 
             const toolbar = "%3$s"; 
             const options = {
@@ -463,7 +464,18 @@ class BuddyMeet {
             api.executeCommand("subject", "%17$s");
             api.executeCommand("avatarUrl", "%18$s");
             api.on("videoConferenceJoined", () => {
-                api.executeCommand("password", "%19$s");
+                if(domain === public_domain && "%19$s"){
+                    api.executeCommand("password", "%19$s");
+                }
+            });
+            /** 
+             * If we are on a self hosted Jitsi domain, we need to become moderators before setting a password
+             * Issue: https://community.jitsi.org/t/lock-failed-on-jitsimeetexternalapi/32060
+             */
+            api.addEventListener("participantRoleChanged", (event) => {
+                if (domain !== public_domain && "%19$s" && event.role === "moderator"){
+                    api.executeCommand("password", "%19$s");
+                }
             });
             api.on("readyToClose", () => {
                  api.dispose();

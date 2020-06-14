@@ -5,7 +5,7 @@ Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
 Tested up to: 5.4.2
 Requires PHP: 5.3
-Stable tag: 1.7.5
+Stable tag: 1.8.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,10 @@ Please note that this setting can only be used if you have set up your own Jitsi
 8. Switch among different rooms you have been invited into
 
 == Changelog ==
+
+= 1.8.0 =
+
+* On self hosted Jitsi domains, the participant needs to be a moderator before setting a password (Issue: https://community.jitsi.org/t/lock-failed-on-jitsimeetexternalapi/32060)
 
 = 1.7.5 =
 
