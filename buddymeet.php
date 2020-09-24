@@ -208,6 +208,8 @@ class BuddyMeet {
                 }
             }
         }
+	    
+        $load_scripts = apply_filters( 'buddymeet_enqueue_scripts_load_scripts', $load_scripts );
 
         if($load_scripts){
             wp_enqueue_script('jquery-ui-autocomplete');
