@@ -139,9 +139,9 @@ function buddymeet_default_settings(){
         'show_watermark' => true,
         'show_brand_watermark' => false,
         'brand_watermark_link' => '',
-        'settings' => 'devices,language',
+        'settings' => 'devices,language,moderator,profile,calendar,sounds',
         'disable_video_quality_label' => false,
-        'toolbar' => 'microphone,camera,hangup,desktop,fullscreen,profile,chat,recording,settings,raisehand,videoquality,tileview'
+        'toolbar' => 'camera,chat,closedcaptions,desktop,download,etherpad,filmstrip,fullscreen,hangup,livestreaming,microphone,mute-everyone,mute-video-everyone,participants-pane,profile,raisehand,recording,security,select-background,settings,shareaudio,sharedvideo,shortcuts,stats,tileview,toggle-camera,videoquality,__end'
     );
 }
 
