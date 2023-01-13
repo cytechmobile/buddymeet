@@ -5,7 +5,7 @@ Requires at least: 4.5
 Tested up to: 6.1.1
 Requires PHP: 5.3
 Stable tag: 2.1.0
-License: GPLv2
+License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Adds video and audio conferencing rooms to BuddyPress! Powered by Jitsi Meet!
