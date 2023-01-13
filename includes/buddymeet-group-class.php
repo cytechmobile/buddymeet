@@ -332,7 +332,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_brand_watermark_link', "" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_film_strip_only', "0" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_start_audio_only', "0" );
-        buddymeet_groups_update_groupmeta($group_id, 'buddymeet_mobile_open_in_browser', "1" );
+        buddymeet_groups_update_groupmeta($group_id, 'buddymeet_mobile_open_in_browser', "0" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_disable_video_quality_label', "0" );
     }
 
