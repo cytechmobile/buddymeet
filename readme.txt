@@ -4,7 +4,7 @@ Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
 Tested up to: 6.1.1
 Requires PHP: 5.3
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,9 +31,10 @@ Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HE
 * width: The width of the embedded window.
 * height: The height of the embedded window.
 * start_audio_only: Start the meet with the microphone only enabled and the camera off.
-* film_strip_only: Start the meet in film strip only mode.
+* film_strip_only: Start the meet in filmstrip only mode.
 * disable_video_quality_label: Disable the video quality indicator.
-* user: The user to display. Leave empty to automatically set the display name of the logged in user.
+* mobile_open_in_browser: Launch the meet directly within the browser in mobile devices without opening the jitsi mobile app.
+* user: The user to display. Leave empty to automatically set the display name of the logged-in user.
 * avatar: The url with the avatar to display. Leave empty to automatically set the avatar of the logged in user.
 * settings: A csv with the Jitsi Meet settings to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57)
 * toolbar: A csv with the Jitsi Meet toolbar options to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49).
@@ -111,6 +112,10 @@ Please note that this setting can only be used if you have set up your own Jitsi
 8. Switch among different rooms you have been invited into
 
 == Changelog ==
+
+= 2.1.0 =
+
+* Added the setting mobile_open_in_browser. When enabled the meet launches directly within the browser in mobile devices without opening the jitsi mobile app.
 
 = 2.0.0 =
 

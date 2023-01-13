@@ -406,6 +406,7 @@ class BuddyMeet {
             $params['height'],
             $params['parent_node'],
             $params['start_audio_only'] === "true" || $params['start_audio_only'] === true ? 1 : 0,
+            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0,
             $params['default_language'],
             $params['film_strip_only'] === "true" || $params['film_strip_only'] === true? 1 : 0,
             $params['background_color'],
@@ -417,7 +418,8 @@ class BuddyMeet {
             $params['subject'],
             isset($params['avatar']) ? $params['avatar'] : '',
             isset($params['password']) ? $params['password'] : '',
-            $hangoutMessage
+            $hangoutMessage,
+            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0
         );
 
         if(wp_doing_ajax()){
@@ -446,6 +448,7 @@ class BuddyMeet {
                 configOverwrite: {
                     startAudioOnly: %8$b === 1,
                     defaultLanguage: "%9$s",
+                    disableDeepLinking: %21$b === 1,
                 },
                 interfaceConfigOverwrite: {
                     filmStripOnly: %10$b === 1,

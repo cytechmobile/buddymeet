@@ -133,6 +133,7 @@ function buddymeet_default_settings(){
         'width' => '100%',
         'height' => 700,
         'start_audio_only' => false,
+        'mobile_open_in_browser' => true,
         'parent_node' => '#meet',
         'default_language' => 'en',
         'background_color' => '#464646',
@@ -317,6 +318,7 @@ function buddymeet_render_jitsi_meet($room = null, $subject = null){
     $width =  groups_get_groupmeta( $group_id, 'buddymeet_width', true);
     $height =  groups_get_groupmeta( $group_id, 'buddymeet_height', true);
     $start_audio_only =  groups_get_groupmeta( $group_id, 'buddymeet_start_audio_only', true) === '1' ? 'true' : 'false';
+    $mobile_open_in_browser =  groups_get_groupmeta( $group_id, 'buddymeet_mobile_open_in_browser', true) === '1' ? 'true' : 'false';
     $default_language =  groups_get_groupmeta( $group_id, 'buddymeet_default_language', true);
     $background_color =  groups_get_groupmeta( $group_id, 'buddymeet_background_color', true);
     $show_watermark =  groups_get_groupmeta( $group_id, 'buddymeet_show_watermark', true)  === '1' ? 'true' : 'false';
@@ -337,6 +339,7 @@ function buddymeet_render_jitsi_meet($room = null, $subject = null){
             width = "' . $width . '"
             height = "' . $height . '"
             start_audio_only = "' . $start_audio_only . '"
+            mobile_open_in_browser = "' . $mobile_open_in_browser . '"
             default_language = "' . $default_language . '"
             background_color = "' . $background_color . '"
             show_watermark = "' . $show_watermark . '"

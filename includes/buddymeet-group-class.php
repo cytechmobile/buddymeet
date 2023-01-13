@@ -159,6 +159,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 $brand_watermark_link =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_brand_watermark_link',  $defaults['brand_watermark_link']);
                 $film_strip_only =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_film_strip_only',  $defaults['film_strip_only']);
                 $start_audio_only =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_start_audio_only',  $defaults['start_audio_only']);
+                $mobile_open_in_browser =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_mobile_open_in_browser',  $defaults['mobile_open_in_browser']);
                 $disable_video_quality_label =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_disable_video_quality_label',  $defaults['disable_video_quality_label']);
                 ?>
 
@@ -298,6 +299,15 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 </div>
                 <?php endif; ?>
 
+                <?php if(in_array('mobile_open_in_browser', $display_settings)): ?>
+                    <div class="field-group">
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="buddymeet_mobile_open_in_browser" value="1" <?php checked( (bool) $mobile_open_in_browser)?>> <?php _e( 'Open Within Mobile Browsers', 'buddymeet' ); ?></label>
+                        </div>
+                        <p class="description"><?php esc_html_e( 'Launch the meet directly within the browser in mobile devices without opening the jitsi mobile app.', 'buddymeet' ); ?></p>
+                    </div>
+                <?php endif; ?>
+
             </fieldset>
         </div>
         <?php
@@ -322,6 +332,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_brand_watermark_link', "" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_film_strip_only', "0" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_start_audio_only', "0" );
+        buddymeet_groups_update_groupmeta($group_id, 'buddymeet_mobile_open_in_browser', "1" );
         buddymeet_groups_update_groupmeta($group_id, 'buddymeet_disable_video_quality_label', "0" );
     }
 
