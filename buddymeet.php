@@ -3,12 +3,12 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 1.8.0
+Version: 2.0.0
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
-Author: Themis Dakanalis <tdakanalis@cytech,gr>
-Author URI: https://www.cytechmobile.com/employee/themis-dakanalis/
+Author: Cytech <wp@cytech.gr>
+Author URI: https://www.cytechmobile.com
 Text Domain: buddymeet
 Domain Path: /languages
 */
@@ -84,7 +84,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '1.8.0';
+		$this->version    = '2.0.0';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
@@ -197,7 +197,7 @@ class BuddyMeet {
 
     public function enqueue_scripts(){
         $load_scripts = false;
-        if(is_page() || is_single()){
+        if(is_page() || is_single() || is_singular()){
             $post = get_post();
             if($post && has_shortcode($post->post_content, buddymeet_get_slug())){
                 $load_scripts = true;
@@ -208,7 +208,7 @@ class BuddyMeet {
                 }
             }
         }
-	    
+
         $load_scripts = apply_filters( 'buddymeet_enqueue_scripts_load_scripts', $load_scripts );
 
         if($load_scripts){
@@ -426,6 +426,7 @@ class BuddyMeet {
             echo '<script>' . $script . '</script>';
         } else {
             $handle = "buddymeet-jitsi-js";
+            wp_enqueue_script($handle, "https://meet.jit.si/external_api.js", array(), buddymeet_get_version(), true);
             wp_add_inline_script($handle, $script);
         }
 
@@ -479,7 +480,7 @@ class BuddyMeet {
                     api.executeCommand("password", "%19$s");
                 }
             });
-            api.on("readyToClose", () => {
+            api.on("videoConferenceLeft", () => {
                  api.dispose();
                  jQuery("#meet").addClass("hangoutMessage").html("%20$s");
             });

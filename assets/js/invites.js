@@ -121,12 +121,14 @@ jQuery(document).ready( function() {
 			}
 		};
 
-		jQuery('#send-to-input').autocomplete(options).autocomplete( "instance" )
-			._renderItem = function( ul, item ) {
-			return jQuery( "<li>" )
-				.append( "<div>" + item.label + "</div>" )
-				.appendTo( ul );
-		};
+		if (jQuery('#send-to-input').autocomplete(options).autocomplete( "instance" )) {
+			jQuery('#send-to-input').autocomplete(options).autocomplete("instance")
+				._renderItem = function (ul, item) {
+				return jQuery("<li>")
+					.append("<div>" + item.label + "</div>")
+					.appendTo(ul);
+			}
+		}
 	}
 
 	function buddymeet_on_autocomplete_select( event, ui) {

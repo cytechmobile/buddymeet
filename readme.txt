@@ -1,11 +1,10 @@
 === BuddyMeet ===
-Contributors: tdakanalis
-Donate link: https://www.paypal.me/tdakanalis
+Contributors: cytechltd
 Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
-Tested up to: 5.4.2
+Tested up to: 6.1.1
 Requires PHP: 5.3
-Stable tag: 1.8.0
+Stable tag: 2.0.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +111,13 @@ Please note that this setting can only be used if you have set up your own Jitsi
 8. Switch among different rooms you have been invited into
 
 == Changelog ==
+
+= 2.0.0 =
+
+* Transferred the ownership of the plugin. Hereafter, the plugin will be actively maintained and further developed by Cytech - https://www.cytechmobile.com !!!
+* Tested and updated compatibility with WordPress 6.1.1
+* Added all the new Jitsi Meet toolbar and setting options by default
+* Improved scripts loading that caused under specific condition the appearance of a blank page instead of the jitsi
 
 = 1.8.0 =
 
