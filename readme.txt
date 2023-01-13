@@ -17,7 +17,7 @@ BuddyMeet is a BuddyPress (2.5+) plugin that uses [Jitsi Meet](https://jitsi.org
 * A room where all members of a group can meet each other
 * On demand rooms among specific invited group members
 * Automatic customization of the room's subject and  the name/avatar of the participants
-* Customization of all the paremeters that [Jitsi Meet API](https://github.com/jitsi/jitsi-meet/blob/master/doc/api.md) supports
+* Customization of all the paremeters that [Jitsi Meet API](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe) supports
 
 Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HERE] to add a conference room to any wordpress page. In that case, you have to pass any configuration by using the following shortcode parameters:
 
