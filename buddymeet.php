@@ -417,7 +417,8 @@ class BuddyMeet {
             $params['subject'],
             isset($params['avatar']) ? $params['avatar'] : '',
             isset($params['password']) ? $params['password'] : '',
-            $hangoutMessage
+            $hangoutMessage,
+            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0
         );
 
         if(wp_doing_ajax()){
@@ -446,6 +447,9 @@ class BuddyMeet {
                 configOverwrite: {
                     startAudioOnly: %8$b === 1,
                     defaultLanguage: "%9$s",
+                    deeplinking: {
+                        disabled: %21$b === 1
+                    }
                 },
                 interfaceConfigOverwrite: {
                     filmStripOnly: %10$b === 1,

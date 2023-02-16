@@ -4,9 +4,9 @@ Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
 Tested up to: 6.1.1
 Requires PHP: 5.3
-Stable tag: 2.0.0
-License: GPLv2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 2.1.0
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Adds video and audio conferencing rooms to BuddyPress! Powered by Jitsi Meet!
 
@@ -17,9 +17,9 @@ BuddyMeet is a BuddyPress (2.5+) plugin that uses [Jitsi Meet](https://jitsi.org
 * A room where all members of a group can meet each other
 * On demand rooms among specific invited group members
 * Automatic customization of the room's subject and  the name/avatar of the participants
-* Customization of all the paremeters that [Jitsi Meet API](https://github.com/jitsi/jitsi-meet/blob/master/doc/api.md) supports
+* Customization of all the parameters that [Jitsi Meet API](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe) supports
 
-Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HERE] to add a conference room to any wordpress page. In that case, you have to pass any configuration by using the following shortcode parameters:
+Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HERE] to add a conference room to any WordPress page. In that case, you have to pass any configuration by using the following shortcode parameters:
 
 * domain: The domain of the Jitsi Meet installation. BuddyMeet uses by default the meet.jit.si free service.
 * room: The identifier of the room.
@@ -31,10 +31,11 @@ Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HE
 * width: The width of the embedded window.
 * height: The height of the embedded window.
 * start_audio_only: Start the meet with the microphone only enabled and the camera off.
-* film_strip_only: Start the meet in film strip only mode.
+* film_strip_only: Start the meet in filmstrip only mode.
 * disable_video_quality_label: Disable the video quality indicator.
-* user: The user to display. Leave empty to automatically set the display name of the logged in user.
-* avatar: The url with the avatar to display. Leave empty to automatically set the avatar of the logged in user.
+* mobile_open_in_browser: Launch the meet directly within the browser in mobile devices without opening the jitsi mobile app.
+* user: The user to display. Leave empty to automatically set the display name of the logged-in user.
+* avatar: The url with the avatar to display. Leave empty to automatically set the avatar of the logged-in user.
 * settings: A csv with the Jitsi Meet settings to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57)
 * toolbar: A csv with the Jitsi Meet toolbar options to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49).
 * background_color: The background color of the window
@@ -43,7 +44,7 @@ Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HE
 BuddyMeet uses by default the meet.jit.si service which is maintained by the Jitsi team at 8x8. Upon the initialization of a room, BuddyMeet sends the following information to the service:
 
 * The name of the current buddypress group as the subject of the call
-* The name, the surname and the avatar of the currently logged in user
+* The name, the surname and the avatar of the currently logged-in user
 
 However, if you want to use your own hosted installation of Jitsi Meet, you can just configure the corresponding domain via the "Manage" menu of a BuddyPress group. For more information about Jitsi Meet please follow the links below:
 
@@ -58,7 +59,7 @@ This plugin is currently available only in english.
 
 == Installation ==
 
-You can download and install BuddyMeet using the built in WordPress plugin installer. If you download BuddyMeet manually, make sure it is uploaded to "/wp-content/plugins/buddymeet/".
+You can download and install BuddyMeet using the built-in WordPress plugin installer. If you download BuddyMeet manually, make sure it is uploaded to "/wp-content/plugins/buddymeet/".
 
 == Frequently Asked Questions ==
 
@@ -91,7 +92,7 @@ If you experience any UI issues you can override the templates of the plugin by 
 
 If you get the above error please check if your site uses the "Rocket Loader" CloudFlare service. In that case you have to add - via your CloudFlare dashboard - a page rule with the setting "Rocket Loader". That will disable the service for the page that reports the error. For more information on how to add a page rule check [here](https://support.cloudflare.com/hc/en-us/articles/218411427).
 
-= I activated BudddyMeet and BuddyPress but I cannot see anything =
+= I activated BudddyMeet and BuddyPress, but I cannot see anything =
 
 Please ensure that you have followed all instructions to properly setup BuddyPress (e.g. you have changed the default WordPress permalink settings). Also make sure that you have enabled the "Groups" component via the BuddyPress settings. After that create a group and in the creation wizard make sure you enabled BuddyMeet for that group.
 
@@ -112,6 +113,10 @@ Please note that this setting can only be used if you have set up your own Jitsi
 
 == Changelog ==
 
+= 2.1.0 =
+
+* Added the setting mobile_open_in_browser. When enabled the meet launches directly within the browser in mobile devices without opening the jitsi mobile app.
+
 = 2.0.0 =
 
 * Transferred the ownership of the plugin. Hereafter, the plugin will be actively maintained and further developed by Cytech - https://www.cytechmobile.com !!!
@@ -121,11 +126,11 @@ Please note that this setting can only be used if you have set up your own Jitsi
 
 = 1.8.0 =
 
-* On self hosted Jitsi domains, the participant needs to be a moderator before setting a password (Issue: https://community.jitsi.org/t/lock-failed-on-jitsimeetexternalapi/32060)
+* On self-hosted Jitsi domains, the participant needs to be a moderator before setting a password (Issue: https://community.jitsi.org/t/lock-failed-on-jitsimeetexternalapi/32060)
 
 = 1.7.5 =
 
-* Changed the format of the room names to alphanumeric ones so that they are compatible with the default Apache's rewrite rules when runing a Jitsi Meet instance with Apache as the web server.
+* Changed the format of the room names to alphanumeric ones so that they are compatible with the default Apache's rewrite rules when running a Jitsi Meet instance with Apache as the web server.
 
 = 1.7.4 =
 
