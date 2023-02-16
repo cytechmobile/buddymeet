@@ -1,0 +1,8 @@
+/.wordpress-org
+/.git
+/.github
+
+.distignore
+.gitignore
+
+docker-compose.yml
