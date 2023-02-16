@@ -4,7 +4,7 @@ Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
 Tested up to: 6.1.1
 Requires PHP: 5.3
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
