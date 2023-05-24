@@ -2,7 +2,7 @@
 Contributors: cytechltd
 Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
-Tested up to: 6.1.1
+Tested up to: 6.2.2
 Requires PHP: 5.3
 Stable tag: 2.2.0
 License: GPLv3
@@ -21,7 +21,7 @@ BuddyMeet is a BuddyPress (2.5+) plugin that uses [Jitsi Meet](https://jitsi.org
 
 Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HERE] to add a conference room to any WordPress page. In that case, you have to pass any configuration by using the following shortcode parameters:
 
-* domain: The domain of the Jitsi Meet installation. BuddyMeet uses by default the meet.jit.si free service.
+* domain: The domain of the Jitsi Meet installation. BuddyMeet uses by default the 8x8.vc service.
 * room: The identifier of the room.
 * subject: The subject of the room. If empty the room is being displayed as the subject.
 * password: A password for the room. The first to enter the room sets that password and all other participants have to put it to enter.
@@ -41,7 +41,7 @@ Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HE
 * background_color: The background color of the window
 * default_language: The default language of the Jitsi Meet interface.
 
-BuddyMeet uses by default the meet.jit.si service which is maintained by the Jitsi team at 8x8. Upon the initialization of a room, BuddyMeet sends the following information to the service:
+BuddyMeet uses by default the 8x8.vc service which is maintained by the Jitsi team at 8x8. Upon the initialization of a room, BuddyMeet sends the following information to the service:
 
 * The name of the current buddypress group as the subject of the call
 * The name, the surname and the avatar of the currently logged-in user
