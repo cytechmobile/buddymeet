@@ -142,25 +142,25 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <p><?php _e( 'Allow members of this group to enter the same video conference room.', 'buddymeet' ); ?></p>
                 <?php
                 $enabled = $is_create ? $defaults['enabled'] : buddymeet_is_enabled($group_id);
-                $meet_members_enabled =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_meet_members_enabled',  $defaults['meet_members_enabled']);
+                $meet_members_enabled =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_meet_members_enabled',  $defaults['meet_members_enabled']);
 
                 //if there is not any room set up create a uuid
-                $room = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_room', buddymeet_generate_unique_room());
-                $password = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_password', '');
-                $domain =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_domain', $defaults['domain']);
-                $toolbar =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_toolbar',  $defaults['toolbar']);
-                $settings =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_settings',  $defaults['settings']);
-                $width =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_width',  $defaults['width']);
-                $height =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_height',  $defaults['height']);
-                $background_color =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_background_color',  $defaults['background_color']);
-                $default_language =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_default_language',  $defaults['default_language']);
-                $show_watermark =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_show_watermark',  $defaults['show_watermark']);
-                $show_brand_watermark =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_show_brand_watermark',  $defaults['show_brand_watermark']);
-                $brand_watermark_link =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_brand_watermark_link',  $defaults['brand_watermark_link']);
-                $film_strip_only =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_film_strip_only',  $defaults['film_strip_only']);
-                $start_audio_only =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_start_audio_only',  $defaults['start_audio_only']);
-                $mobile_open_in_browser =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_mobile_open_in_browser',  $defaults['mobile_open_in_browser']);
-                $disable_video_quality_label =  buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_disable_video_quality_label',  $defaults['disable_video_quality_label']);
+                $room = buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_room', buddymeet_generate_unique_room());
+                $password = buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_password', '');
+                $domain =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_domain', $defaults['domain']);
+                $toolbar =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_toolbar',  $defaults['toolbar']);
+                $settings =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_settings',  $defaults['settings']);
+                $width =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_width',  $defaults['width']);
+                $height =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_height',  $defaults['height']);
+                $background_color =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_background_color',  $defaults['background_color']);
+                $default_language =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_default_language',  $defaults['default_language']);
+                $show_watermark =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_show_watermark',  $defaults['show_watermark']);
+                $show_brand_watermark =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_show_brand_watermark',  $defaults['show_brand_watermark']);
+                $brand_watermark_link =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_brand_watermark_link',  $defaults['brand_watermark_link']);
+                $film_strip_only =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_film_strip_only',  $defaults['film_strip_only']);
+                $start_audio_only =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_start_audio_only',  $defaults['start_audio_only']);
+                $mobile_open_in_browser =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_mobile_open_in_browser',  $defaults['mobile_open_in_browser']);
+                $disable_video_quality_label =  buddymeet_groups_get_groupmeta_settings( $group_id, 'buddymeet_disable_video_quality_label',  $defaults['disable_video_quality_label']);
                 ?>
 
                 <div class="field-group">

@@ -4,7 +4,7 @@ Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
 Tested up to: 6.1.1
 Requires PHP: 5.3
-Stable tag: 2.1.1
+Stable tag: 2.2.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -112,6 +112,10 @@ Please note that this setting can only be used if you have set up your own Jitsi
 8. Switch among different rooms you have been invited into
 
 == Changelog ==
+
+= 2.2.0 =
+
+* Changed the default public domain from meet.jit.si to 8x8.vc.
 
 = 2.1.0 =
 

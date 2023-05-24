@@ -156,7 +156,7 @@ class BuddyMeet_Component extends BP_Component {
         }
 
         $exclude = array(get_current_user_id());
-        $room_members = groups_get_groupmeta($group_id, BuddyMeet::ROOM_MEMBERS_PREFIX . $room);
+        $room_members = buddymeet_groups_get_groupmeta($group_id, BuddyMeet::ROOM_MEMBERS_PREFIX . $room);
         if($room_members){
             $exclude = array_unique(array_merge($exclude, $room_members));
         }
@@ -338,7 +338,7 @@ class BuddyMeet_Component extends BP_Component {
 
         foreach($users as $user_id) {
             $user_rooms_option_key = BuddyMeet::USER_ROOMS_PREFIX . $user_id;
-            $rooms = groups_get_groupmeta($group_id, $user_rooms_option_key);
+            $rooms = buddymeet_groups_get_groupmeta($group_id, $user_rooms_option_key);
             if($rooms){
                 $rooms[] = $room;
             } else {
@@ -349,7 +349,7 @@ class BuddyMeet_Component extends BP_Component {
 
         //add the users as members of the current room
         $room_users_option_key = BuddyMeet::ROOM_MEMBERS_PREFIX . $room['id'];
-        $current_users = groups_get_groupmeta($group_id, $room_users_option_key);
+        $current_users = buddymeet_groups_get_groupmeta($group_id, $room_users_option_key);
         if(!$current_users){
             $current_users = array_unique(array_merge($users, array(get_current_user_id())));
         } else {
@@ -368,7 +368,7 @@ class BuddyMeet_Component extends BP_Component {
         //delete room from all users
         foreach($users as $user_id){
             $user_rooms_option_key = BuddyMeet::USER_ROOMS_PREFIX . $user_id;
-            $rooms = groups_get_groupmeta($group_id, $user_rooms_option_key);
+            $rooms = buddymeet_groups_get_groupmeta($group_id, $user_rooms_option_key);
             foreach($rooms as $index => $room){
                 if($room['id'] === $room_id){
                     unset($rooms[$index]);
@@ -383,7 +383,7 @@ class BuddyMeet_Component extends BP_Component {
 
             //remove users from room
             $room_members_option_key = BuddyMeet::ROOM_MEMBERS_PREFIX . $room_id;
-            $members = groups_get_groupmeta($group_id, $room_members_option_key);
+            $members = buddymeet_groups_get_groupmeta($group_id, $room_members_option_key);
             foreach($members as $index => $member){
                 if($member === $user_id){
                     unset($members[$index]);

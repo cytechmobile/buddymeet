@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 2.1.1
+Version: 2.2.0
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -24,6 +24,8 @@ class BuddyMeet {
 
     const USER_ROOMS_PREFIX = 'buddymeet_user_room_';
     const ROOM_MEMBERS_PREFIX = 'buddymeet_room_members_';
+    const PUBLIC_JITSI_DOMAIN_OLD = 'meet.jit.si';
+    const PUBLIC_JITSI_DOMAIN = '8x8.vc';
 
 	private static $instance;
 
@@ -84,7 +86,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '2.1.1';
+		$this->version    = '2.2.0';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
@@ -150,6 +152,8 @@ class BuddyMeet {
         add_shortcode( 'buddymeet', array($this, 'add_shortcode'));
 
 		do_action_ref_array( 'buddymeet_after_setup_actions', array( &$this ) );
+
+        add_filter( 'buddymeet_groups_get_groupmeta', array($this, 'buddymeet_migrate_groupmeta'), 10, 3 );
 	}
 
     public function set_default_groups_nav() {
@@ -219,7 +223,7 @@ class BuddyMeet {
             ));
 
             $handle = 'buddymeet-jitsi-js';
-            wp_enqueue_script( $handle, "https://meet.jit.si/external_api.js", array(), buddymeet_get_version(), true);
+            wp_enqueue_script( $handle, "https://8x8.vc/external_api.js", array(), buddymeet_get_version(), true);
         }
     }
 
@@ -418,7 +422,8 @@ class BuddyMeet {
             isset($params['avatar']) ? $params['avatar'] : '',
             isset($params['password']) ? $params['password'] : '',
             $hangoutMessage,
-            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0
+            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0,
+            BuddyMeet::PUBLIC_JITSI_DOMAIN
         );
 
         if(wp_doing_ajax()){
@@ -427,7 +432,7 @@ class BuddyMeet {
             echo '<script>' . $script . '</script>';
         } else {
             $handle = "buddymeet-jitsi-js";
-            wp_enqueue_script($handle, "https://meet.jit.si/external_api.js", array(), buddymeet_get_version(), true);
+            wp_enqueue_script($handle, "https://8x8.vc/external_api.js", array(), buddymeet_get_version(), true);
             wp_add_inline_script($handle, $script);
         }
 
@@ -435,7 +440,7 @@ class BuddyMeet {
     }
 
     public function get_jitsi_init_template(){
-        return 'const public_domain = "meet.jit.si";
+        return 'const public_domain = "%22$s";
             const domain = "%1$s";
             const settings = "%2$s"; 
             const toolbar = "%3$s"; 
@@ -510,6 +515,13 @@ class BuddyMeet {
         }
 
         return wp_parse_args($extra, $settings);
+    }
+
+    public function buddymeet_migrate_groupmeta($value, $group_id, $key) {
+        if ($value === BuddyMeet::PUBLIC_JITSI_DOMAIN_OLD) {
+            return BuddyMeet::PUBLIC_JITSI_DOMAIN;
+        }
+        return $value;
     }
 }
 
