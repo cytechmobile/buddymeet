@@ -36,8 +36,8 @@ Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HE
 * mobile_open_in_browser: Launch the meet directly within the browser in mobile devices without opening the jitsi mobile app.
 * user: The user to display. Leave empty to automatically set the display name of the logged-in user.
 * avatar: The url with the avatar to display. Leave empty to automatically set the avatar of the logged-in user.
-* settings: A csv with the Jitsi Meet settings to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57)
-* toolbar: A csv with the Jitsi Meet toolbar options to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49).
+* settings: A csv with the Jitsi Meet settings to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L124)
+* toolbar: A csv with the Jitsi Meet toolbar options to get enabled. For the available options check [here](https://github.com/jitsi/jitsi-meet/blob/master/config.js#L718).
 * background_color: The background color of the window
 * default_language: The default language of the Jitsi Meet interface.
 

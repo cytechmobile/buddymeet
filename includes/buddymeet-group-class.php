@@ -202,7 +202,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <div class="field-group">
                     <label><?php _e( 'Toolbar', 'buddymeet' ); ?></label>
                     <input type="text" name="buddymeet_toolbar" id="buddymeet_toolbar" value="<?php  esc_attr_e($toolbar); ?>"/>
-                    <p class="description"><?php _e( 'The toolbar buttons to get displayed in comma separated format. For more information refer to <a  target="_blank" href="https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49">TOOLBAR_BUTTONS</a>.', 'buddymeet' ); ?></p>
+                    <p class="description"><?php _e( 'The toolbar buttons to get displayed in comma separated format. For more information refer to <a  target="_blank" href="https://github.com/jitsi/jitsi-meet/blob/master/config.js#L718">TOOLBAR_BUTTONS</a>.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
 
@@ -210,7 +210,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
                 <div class="field-group">
                     <label><?php _e( 'Settings', 'buddymeet' ); ?></label>
                     <input type="text" name="buddymeet_settings" id="buddymeet_settings" value="<?php  esc_attr_e($settings); ?>"/>
-                    <p class="description"><?php _e( 'The settings to be available in comma separated format. For more information refer to <a  target="_blank" href="https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57">SETTINGS_SECTIONS</a>.', 'buddymeet' ); ?></p>
+                    <p class="description"><?php _e( 'The settings to be available in comma separated format. For more information refer to <a  target="_blank" href="https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L124">SETTINGS_SECTIONS</a>.', 'buddymeet' ); ?></p>
                 </div>
                 <?php endif; ?>
 

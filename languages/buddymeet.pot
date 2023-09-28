@@ -150,7 +150,7 @@ msgid "Toolbar"
 msgstr ""
 
 #: includes/buddymeet-group-class.php:198
-msgid "The toolbar buttons to get displayed in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L49\">TOOLBAR_BUTTONS</a>."
+msgid "The toolbar buttons to get displayed in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/config.js#L718\">TOOLBAR_BUTTONS</a>."
 msgstr ""
 
 #: includes/buddymeet-group-class.php:204
@@ -158,7 +158,7 @@ msgid "Settings"
 msgstr ""
 
 #: includes/buddymeet-group-class.php:206
-msgid "The settings to be available in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L57\">SETTINGS_SECTIONS</a>."
+msgid "The settings to be available in comma separated format. For more information refer to <a  target=\"_blank\" href=\"https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js#L124\">SETTINGS_SECTIONS</a>."
 msgstr ""
 
 #: includes/buddymeet-group-class.php:212
