@@ -400,6 +400,11 @@ class BuddyMeet {
         $params = wp_parse_args($params, buddymeet_default_settings());
         $hangoutMessage = __("The video call has been ended.", "buddymeet");
 
+        // sanitize short code input parameters for echoing in JS
+        $params = array_map(function($item) {
+            return esc_js($item);
+        }, $params);
+
         $script = sprintf(
             $this->get_jitsi_init_template(),
             $params['domain'],
@@ -475,17 +480,13 @@ class BuddyMeet {
             api.executeCommand("displayName", "%16$s");
             api.executeCommand("subject", "%17$s");
             api.executeCommand("avatarUrl", "%18$s");
-            api.on("videoConferenceJoined", () => {
-                if(domain === public_domain && "%19$s"){
-                    api.executeCommand("password", "%19$s");
-                }
-            });
+            
             /** 
-             * If we are on a self hosted Jitsi domain, we need to become moderators before setting a password
+             * Only moderators can set a password
              * Issue: https://community.jitsi.org/t/lock-failed-on-jitsimeetexternalapi/32060
              */
             api.addEventListener("participantRoleChanged", (event) => {
-                if (domain !== public_domain && "%19$s" && event.role === "moderator"){
+                if ("%19$s" && event.role === "moderator"){
                     api.executeCommand("password", "%19$s");
                 }
             });
