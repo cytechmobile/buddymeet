@@ -4,7 +4,7 @@ Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
 Tested up to: 6.2.2
 Requires PHP: 5.3
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -112,6 +112,11 @@ Please note that this setting can only be used if you have set up your own Jitsi
 8. Switch among different rooms you have been invited into
 
 == Changelog ==
+
+= 2.3.0 =
+
+* Added short code input sanitization to prohibit possible XSS attacks.
+* Updated all references to the documentation of Jitsi Meet settings and toolbar options.
 
 = 2.2.0 =
 
