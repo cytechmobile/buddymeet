@@ -16,20 +16,32 @@ if ( class_exists( 'BP_Group_Extension' ) ) :
  */
 class BuddyMeet_Group extends BP_Group_Extension {
     function __construct() {
-        global $bp;
-
-        $enabled = false;
-        if ( isset( $bp->groups->current_group->id ) ) {
-            $enabled = buddymeet_is_enabled($bp->groups->current_group->id);
-        }
-
         $args = array(
             'name' => __( buddymeet_get_name(), 'buddymeet' ),
             'slug' => buddymeet_get_slug(),
             'nav_item_position' => 40,
-            'enable_nav_item' =>  $enabled
+            'show_tab_callback' => array( $this, 'show_tab' ),
         );
+
+        // BuddyPress < 12.0.0 or BuddyPress >= 12.0.0 with the BP Classic plugin active.
+        if ( ! function_exists( 'bp_core_get_query_parser' ) || 'legacy' === bp_core_get_query_parser() ) {
+            $args['show_tab'] = $this->show_tab();
+            unset( $args['show_tab_callback'] );
+        }
+
         parent::init( $args );
+    }
+
+    function show_tab($group_id = null) {
+        global $bp;
+        if (!$group_id) {
+            $group_id = $bp->groups->current_group->id;
+        }
+        $show_tab = 'noone';
+        if ($group_id && buddymeet_is_enabled($group_id)) {
+            $show_tab = 'anyone';
+        }
+        return $show_tab;
     }
 
     function create_screen( $group_id = null) {
@@ -115,7 +127,7 @@ class BuddyMeet_Group extends BP_Group_Extension {
             || groups_is_user_admin( $bp->loggedin_user->id, $group_id )
             || is_super_admin() ) {
 
-            $enabled = buddymeet_is_enabled($bp->groups->current_group->id);
+            $enabled = buddymeet_is_enabled($group_id);
             if ( $enabled == 1 ) {
                 $is_bp_nouveau = function_exists('bp_nouveau_single_item_subnav_classes');
                 $home = $is_bp_nouveau ? 'buddymeet/home' : 'buddymeet/legacy/home';

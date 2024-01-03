@@ -5,7 +5,7 @@ $room = buddymeet_get_current_user_room();
 
 do_action( 'bp_before_group_meet_member_content' ) ?>
 
-<form action="#" method="post" id="send-invite-form">
+<form action="#" method="post" id="send-invite-form" class="standard-form">
 
     <div id="meet-wrapper" class="members-meet-parent">
         <?php if($room):?>

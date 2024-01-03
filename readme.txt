@@ -2,9 +2,9 @@
 Contributors: cytechltd
 Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
-Tested up to: 6.2.2
+Tested up to: 6.4.2
 Requires PHP: 5.3
-Stable tag: 2.3.0
+Stable tag: 2.4.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -110,8 +110,13 @@ Please note that this setting can only be used if you have set up your own Jitsi
 6. Accept a meet invitation
 7. Enter the room you was invited into
 8. Switch among different rooms you have been invited into
+9. Set the default Jitsi domain via the administration menu
 
 == Changelog ==
+
+= 2.4.0 =
+* Added compatibility with BuddyPress 12.0
+* Added admin menu that enables WordPress administrators to set the default Jitsi domain. This domain will serve as the default for all newly created BuddyPress Groups and shortcodes. Users retain the option to override this value via group settings or shortcode parameters.
 
 = 2.3.0 =
 

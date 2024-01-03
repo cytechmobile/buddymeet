@@ -100,7 +100,7 @@ class BuddyMeet_Component extends BP_Component {
             $group = ($groups_template !== null && $groups_template->group) ? $groups_template->group : groups_get_current_group();
             $group_link = bp_get_group_permalink( $group );
             $slug = buddymeet_get_slug();
-            $budddymeet_link = trailingslashit($group_link . '/' . $slug);
+            $budddymeet_link = trailingslashit($group_link . $slug);
 
             $sub_nav[] = array(
                 'name' => _x('Meet the Group', 'BuddyMeet group call screen sub nav', 'buddymeet'),
@@ -140,9 +140,7 @@ class BuddyMeet_Component extends BP_Component {
     public function members_autocomplete() {
         check_ajax_referer( 'buddymeet_members_autocomplete' );
 
-        global $bp;
-
-        $group_id = absint($bp->groups->current_group->id);
+        $group_id = isset($_REQUEST['group_id']) && is_numeric($_REQUEST['group_id']) ? absint($_REQUEST['group_id']) : null;
         $search_terms =  isset($_REQUEST['term']) ? sanitize_text_field($_REQUEST['term']) : null;
         $room =   isset($_REQUEST['room']) ? sanitize_text_field($_REQUEST['room']) : null;
 
@@ -181,7 +179,7 @@ class BuddyMeet_Component extends BP_Component {
         check_ajax_referer( 'buddymeet_members_add_invite' );
 
         $member_id = isset($_POST['member_id']) && is_numeric($_POST['member_id']) ? absint($_POST['member_id']) : null;
-        $group_id = isset($_POST['group_id']) && is_numeric($_POST['group_id']) ? absint($_POST['group_id']) : null;
+        $group_id = isset($_REQUEST['group_id']) && is_numeric($_REQUEST['group_id']) ? absint($_REQUEST['group_id']) : null;
 
         if (is_null($member_id)|| is_null($group_id)){
             return false;
@@ -203,9 +201,7 @@ class BuddyMeet_Component extends BP_Component {
     public function members_send_invites() {
         check_ajax_referer( 'buddymeet_send_invites' );
 
-        $bp = buddypress();
-        $group = $bp->groups->current_group;
-        $group_id = $group->id;
+        $group_id = isset($_REQUEST['group_id']) && is_numeric($_REQUEST['group_id']) ? absint($_REQUEST['group_id']) : null;
         $requesting_user_id = get_current_user_id();
 
         $users = isset($_REQUEST['users']) && is_array($_REQUEST['users']) ?
@@ -227,7 +223,7 @@ class BuddyMeet_Component extends BP_Component {
                     //send the notification
                     $notification_id = bp_notifications_add_notification(array(
                         'user_id' => $user_id,
-                        'item_id' => $group->id,
+                        'item_id' => $group_id,
                         'secondary_item_id' => $requesting_user_id,
                         'component_name' => buddymeet_get_slug(),
                         'component_action' => 'members_send_invites',
@@ -236,6 +232,7 @@ class BuddyMeet_Component extends BP_Component {
                     bp_notifications_add_meta($notification_id, 'room', $room);
                 }
 
+                $group = groups_get_group( $group_id );
                 $group_link = bp_get_group_permalink( $group );
                 $meet_link = $group_link . buddymeet_get_slug() . '/members/' . $room;
 
@@ -267,14 +264,14 @@ class BuddyMeet_Component extends BP_Component {
     public function members_delete_room() {
         check_ajax_referer( 'buddymeet_members_delete_room' );
 
-        $bp = buddypress();
-        $group_id = $bp->groups->current_group->id;
+        $group_id = isset($_REQUEST['group_id']) && is_numeric($_REQUEST['group_id']) ? absint($_REQUEST['group_id']) : null;
         $user_id = get_current_user_id();
         $room =  isset($_REQUEST['room']) ? sanitize_text_field($_REQUEST['room']) : null;
 
         $this->remove_users_from_room($group_id, array($user_id), $room);
 
-        $group_link = bp_get_group_permalink( $bp->groups->current_group );
+        $group = groups_get_group( $group_id );
+        $group_link = bp_get_group_permalink( $group );
         $meet_link = $group_link  . 'buddymeet/members/';
         $return = array('redirect' => $meet_link);
 

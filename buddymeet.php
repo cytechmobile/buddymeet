@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 2.3.0
+Version: 2.4.0
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -86,7 +86,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '2.3.0';
+		$this->version    = '2.4.0';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
@@ -147,6 +147,9 @@ class BuddyMeet {
 
         add_action( 'bp_setup_nav', array($this, 'set_default_groups_nav'), 20 );
 
+        add_action( 'admin_menu', array($this, 'admin_menu'), 10 );
+        add_action( 'admin_init', array($this, 'register_settings'), 10 );
+
         add_filter( 'buddymeet_custom_settings', array($this, 'buddymeet_post_settings'), 9 );
 
         add_shortcode( 'buddymeet', array($this, 'add_shortcode'));
@@ -155,6 +158,37 @@ class BuddyMeet {
 
         add_filter( 'buddymeet_groups_get_groupmeta', array($this, 'buddymeet_migrate_groupmeta'), 10, 3 );
 	}
+
+    public function admin_menu(){
+        $page_title = __( buddymeet_get_name(), 'buddymeet' );
+        $menu_title =  __( buddymeet_get_name(), 'buddymeet' );
+        $capability = 'manage_options';
+        $menu_slug  = buddymeet_get_slug();
+        $function   = array($this, 'display_admin_menu_page');
+        $icon_url   = 'dashicons-video-alt3';
+        $position   = 20;
+
+        add_menu_page( $page_title,$menu_title,$capability,$menu_slug,$function,$icon_url,$position );
+    }
+
+    public function display_admin_menu_page(){ ?>
+        <h1><?php echo get_admin_page_title();?></h1>
+        <form method="post" action="options.php">
+            <?php settings_fields( 'buddymeet-settings' ); ?>
+            <?php do_settings_sections( 'buddymeet-settings' ); ?>
+            <table class="form-table">
+                <tr>
+                    <th scope="row"><?php echo __( 'Default Jitsi Domain', 'buddymeet' ); ?></th>
+                    <td><input type="text" name="buddymeet_jitsi_domain" value="<?php echo BuddyMeet::get_default_jitsi_domain(); ?>"/></td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    <?php }
+
+    public function register_settings() {
+        register_setting( 'buddymeet-settings', 'buddymeet_jitsi_domain' );
+    }
 
     public function set_default_groups_nav() {
         bp_core_new_nav_default (
@@ -427,8 +461,7 @@ class BuddyMeet {
             isset($params['avatar']) ? $params['avatar'] : '',
             isset($params['password']) ? $params['password'] : '',
             $hangoutMessage,
-            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0,
-            BuddyMeet::PUBLIC_JITSI_DOMAIN
+            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0
         );
 
         if(wp_doing_ajax()){
@@ -445,8 +478,7 @@ class BuddyMeet {
     }
 
     public function get_jitsi_init_template(){
-        return 'const public_domain = "%22$s";
-            const domain = "%1$s";
+        return 'const domain = "%1$s";
             const settings = "%2$s"; 
             const toolbar = "%3$s"; 
             const options = {
@@ -520,9 +552,17 @@ class BuddyMeet {
 
     public function buddymeet_migrate_groupmeta($value, $group_id, $key) {
         if ($value === BuddyMeet::PUBLIC_JITSI_DOMAIN_OLD) {
-            return BuddyMeet::PUBLIC_JITSI_DOMAIN;
+            return BuddyMeet::get_default_jitsi_domain();
         }
         return $value;
+    }
+
+    public static function get_default_jitsi_domain() {
+        $domain = get_option('buddymeet_jitsi_domain', BuddyMeet::PUBLIC_JITSI_DOMAIN);
+        if (empty($domain)) {
+            $domain = BuddyMeet::PUBLIC_JITSI_DOMAIN;
+        }
+        return $domain;
     }
 }
 
