@@ -127,7 +127,7 @@ function buddymeet_default_settings(){
         'enabled' => true,
         'meet_members_enabled' => true,
         'room' => '',
-        'domain' => BuddyMeet::PUBLIC_JITSI_DOMAIN,
+        'domain' => BuddyMeet::get_default_jitsi_domain(),
         'password' => '',
         'film_strip_only' => false,
         'width' => '100%',
