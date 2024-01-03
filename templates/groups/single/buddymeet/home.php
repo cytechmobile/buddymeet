@@ -10,7 +10,7 @@ $user_rooms = buddymeet_get_user_rooms($group_id, $user_id);
 $current_room = buddymeet_get_current_user_room_from_path();
 ?>
     <nav class="<?php bp_nouveau_single_item_subnav_classes(); ?>" id="subnav" role="navigation" aria-label="<?php  esc_attr_e( 'BuddyMeet secondary navigation', 'buddymeet' ); ?>">
-        <ul class="subnav">
+        <ul class="subnav bp-priority-subnav-nav-items">
             <?php $display_meet_members ? bp_get_options_nav(buddymeet_get_slug()) : ''; ?>
 
             <?php if($action !== 'group') :?>

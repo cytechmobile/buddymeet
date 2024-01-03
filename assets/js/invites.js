@@ -1,6 +1,5 @@
 jQuery(document).ready( function() {
 	const ajaxurl = args.ajaxurl;
-	console.log(ajaxurl);
 
 	const room = jQuery('#room').val();
 	let initializeMeet = room === '' || room === undefined;
@@ -12,6 +11,7 @@ jQuery(document).ready( function() {
 		const data = {
 			'action' : 'members_delete_room',
 			'room' :  jQuery('#room').val(),
+			'group_id' :  group_id,
 			'_wpnonce': jQuery("input#_wpnonce_members_delete_room").val(),
 		};
 
@@ -47,6 +47,7 @@ jQuery(document).ready( function() {
 			'users': users,
 			'room_name': jQuery('#room_name').val(),
 			'room': jQuery('#room').val(),
+			'group_id' :  group_id,
 			'initialize': initializeMeet,
 			'_wpnonce': jQuery("input#_wpnonce_send_invites").val(),
 		};
@@ -101,6 +102,7 @@ jQuery(document).ready( function() {
 
 				const data =  {
 					'action': 'members_autocomplete',
+					'group_id' :  group_id,
 					'_wpnonce': jQuery("input#_wpnonce_members_autocomplete").val(),
 					'term':  request.term,
 					'room': room
