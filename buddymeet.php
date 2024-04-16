@@ -522,10 +522,6 @@ class BuddyMeet {
                     api.executeCommand("password", "%19$s");
                 }
             });
-            api.on("videoConferenceLeft", () => {
-                 api.dispose();
-                 jQuery("#meet").addClass("hangoutMessage").html("%20$s");
-            });
 
             window.api = api;';
     }
