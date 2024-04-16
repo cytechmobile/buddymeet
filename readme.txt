@@ -2,9 +2,9 @@
 Contributors: cytechltd
 Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
 Requires at least: 4.5
-Tested up to: 6.4.2
+Tested up to: 6.5.2
 Requires PHP: 5.3
-Stable tag: 2.4.0
+Stable tag: 2.5.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -113,6 +113,9 @@ Please note that this setting can only be used if you have set up your own Jitsi
 9. Set the default Jitsi domain via the administration menu
 
 == Changelog ==
+
+= 2.5.0 =
+* Removed the client disposal logic upon receiving the videoConferenceLeft event because this event is triggered when starting the login flow.
 
 = 2.4.0 =
 * Added compatibility with BuddyPress 12.0
