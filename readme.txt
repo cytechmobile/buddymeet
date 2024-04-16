@@ -1,6 +1,6 @@
 === BuddyMeet ===
 Contributors: cytechltd
-Tags: BuddyMeet, jitsi, video, audio, conference, buddypress
+Tags: BuddyMeet, jitsi, video, conference, buddypress
 Requires at least: 4.5
 Tested up to: 6.5.2
 Requires PHP: 5.3
