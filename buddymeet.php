@@ -3,7 +3,7 @@
 Plugin Name: BuddyMeet
 Plugin URI:
 Description: Adds a meeting room with video and audio capabilities to BuddyPress. Powered by <a target="_blank" href="https://jitsi.org/"> Jitsi Meet </a>.
-Version: 2.5.0
+Version: 2.6.0
 Requires at least: 4.6.0
 Tags: buddypress
 License: GPL V2
@@ -21,6 +21,19 @@ if ( ! class_exists( 'BuddyMeet' ) ) :
  * Main BuddyMeet Class
  */
 class BuddyMeet {
+    public $version;
+    public $file;
+    public $basename;
+    public $plugin_dir;
+    public $plugin_url;
+    public $includes_dir;
+    public $lang_dir;
+    public $buddymeet_slug;
+    public $includes_url;
+    public $buddymeet_name;
+    public $domain;
+    public $errors;
+
 
     const USER_ROOMS_PREFIX = 'buddymeet_user_room_';
     const ROOM_MEMBERS_PREFIX = 'buddymeet_room_members_';
@@ -37,7 +50,7 @@ class BuddyMeet {
 	 *
 	 * @var  string
 	 */
-	public static $required_bp_version = '2.5.0';
+	public static $required_bp_version = '2.6.0';
 
 	/**
 	 * BuddyPress config.
@@ -86,7 +99,7 @@ class BuddyMeet {
 	 * @uses plugin_dir_url() to build BuddyMeet plugin url
 	 */
 	private function setup_globals() {
-		$this->version    = '2.5.0';
+		$this->version    = '2.6.0';
 
 		// Setup some base path and URL information
 		$this->file       = __FILE__;
@@ -120,6 +133,7 @@ class BuddyMeet {
 	private function includes() {
 		require( $this->includes_dir . 'buddymeet-actions.php'         );
 		require( $this->includes_dir . 'buddymeet-functions.php'       );
+		require( $this->includes_dir . 'buddymeet-jwt-class.php'       );
 
 		//TODO CHECK ADMIN INTERFACES
 		/*if( is_admin() ){
@@ -179,7 +193,25 @@ class BuddyMeet {
             <table class="form-table">
                 <tr>
                     <th scope="row"><?php echo __( 'Default Jitsi Domain', 'buddymeet' ); ?></th>
-                    <td><input type="text" name="buddymeet_jitsi_domain" value="<?php echo BuddyMeet::get_default_jitsi_domain(); ?>"/></td>
+                    <td><input type="text" style="width: 80%" name="buddymeet_jitsi_domain" value="<?php echo BuddyMeet::get_default_jitsi_domain(); ?>"/></td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php echo __( 'Application ID', 'buddymeet' ); ?></th>
+                    <td><input style="width: 80%" type="text" name="buddymeet_jitsi_appid" value="<?php echo get_option('buddymeet_jitsi_appid', ""); ?>"/></td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php echo __( 'Key ID', 'buddymeet' ); ?></th>
+                    <td>
+                        <input style="width: 80%" type="text" name="buddymeet_jitsi_apikeyid" value="<?php echo get_option('buddymeet_jitsi_apikeyid', ""); ?>"/>
+                        <p class="description"> <?php esc_html_e( 'For the 8x8.vc domain, enter your API Key ID here. For self‑hosted servers, you may enter any value.', 'buddymeet' ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php echo __( 'Private Key', 'buddymeet' ); ?></th>
+                    <td>
+                        <textarea style="width: 80%;" rows="10" name="buddymeet_jitsi_privatekey" placeholder="<?php echo get_option( 'buddymeet_jitsi_privatekey', '' ) ? esc_attr__( '************************************** (For security reasons the private key is not displayed)', 'buddymeet' ) : '';?>"></textarea>
+                        <p class="description"> <?php esc_html_e( 'Paste your PEM‑encoded private key here to update it. Leave blank to keep the current key.', 'buddymeet' ); ?></p>
+                    </td>
                 </tr>
             </table>
             <?php submit_button(); ?>
@@ -188,6 +220,19 @@ class BuddyMeet {
 
     public function register_settings() {
         register_setting( 'buddymeet-settings', 'buddymeet_jitsi_domain' );
+        register_setting( 'buddymeet-settings', 'buddymeet_jitsi_appid' );
+        register_setting( 'buddymeet-settings', 'buddymeet_jitsi_apikeyid' );
+        register_setting( 'buddymeet-settings', 'buddymeet_jitsi_privatekey' );
+        register_setting( 'buddymeet-settings',  'buddymeet_jitsi_privatekey',
+            ['sanitize_callback' => array($this, 'buddymeet_sanitize_privatekey') ]);
+    }
+
+    public function buddymeet_sanitize_privatekey( $new_value ) {
+        if ( trim( $new_value ) === '' ) {
+            return get_option( 'buddymeet_jitsi_privatekey', '' );
+        }
+
+        return $new_value;
     }
 
     public function set_default_groups_nav() {
@@ -257,7 +302,7 @@ class BuddyMeet {
             ));
 
             $handle = 'buddymeet-jitsi-js';
-            wp_enqueue_script( $handle, "https://8x8.vc/external_api.js", array(), buddymeet_get_version(), true);
+            wp_enqueue_script( $handle, "https://8x8.vc/libs/external_api.min.js", array(), buddymeet_get_version(), true);
         }
     }
 
@@ -439,12 +484,31 @@ class BuddyMeet {
             return esc_js($item);
         }, $params);
 
+        $app_id = get_option('buddymeet_jitsi_appid', "");
+        $key_id = get_option('buddymeet_jitsi_apikeyid', "");
+        $private_key = get_option('buddymeet_jitsi_privatekey', "");
+        $jwt_generator = new BuddyMeet_JWT($app_id, $key_id, $private_key);
+
+        $user_data = [
+            'id'     =>  isset($params['user_id']) ? $params['user_id'] : '',
+            'name'   => isset($params['user']) ? $params['user'] : '',
+            'avatar' => isset($params['avatar']) ? $params['avatar'] : '',
+            'email' => isset($params['email']) ? $params['email'] : '',
+        ];
+
+        $room_name = $params['room'];
+        $jwt = $jwt_generator->generate_token($user_data, $room_name);
+        error_log($jwt);
+        if (isset($jwt) && isset($app_id)) {
+            $room_name = $app_id . '/' . $room_name;
+        }
+
         $script = sprintf(
             $this->get_jitsi_init_template(),
             $params['domain'],
             $params['settings'],
             $params['toolbar'],
-            $params['room'],
+            $room_name,
             $params['width'],
             $params['height'],
             $params['parent_node'],
@@ -461,7 +525,8 @@ class BuddyMeet {
             isset($params['avatar']) ? $params['avatar'] : '',
             isset($params['password']) ? $params['password'] : '',
             $hangoutMessage,
-            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0
+            $params['mobile_open_in_browser'] === "true" || $params['mobile_open_in_browser'] === true ? 1 : 0,
+            $jwt
         );
 
         if(wp_doing_ajax()){
@@ -470,7 +535,7 @@ class BuddyMeet {
             echo '<script>' . $script . '</script>';
         } else {
             $handle = "buddymeet-jitsi-js";
-            wp_enqueue_script($handle, "https://8x8.vc/external_api.js", array(), buddymeet_get_version(), true);
+            wp_enqueue_script($handle, "https://8x8.vc/libs/external_api.min.js", array(), buddymeet_get_version(), true);
             wp_add_inline_script($handle, $script);
         }
 
@@ -486,6 +551,7 @@ class BuddyMeet {
                 width: "%5$s",
                 height: %6$d,
                 parentNode: document.querySelector("%7$s"),
+                jwt: "%22$s",
                 configOverwrite: {
                     startAudioOnly: %8$b === 1,
                     defaultLanguage: "%9$s",
@@ -533,8 +599,14 @@ class BuddyMeet {
             if ($post && has_shortcode($post->post_content, buddymeet_get_slug())) {
                 $user = wp_get_current_user();
                 if($user->exists()) {
+                    if (!array_key_exists('user_id', $settings)) {
+                        $extra['user_id'] = $user->ID;
+                    }
                     if (!array_key_exists('user', $settings)) {
                         $extra['user'] = $user->display_name;
+                    }
+                    if (!array_key_exists('email', $settings)) {
+                        $extra['email'] = $user->user_email;
                     }
                     if (!array_key_exists('avatar', $settings)) {
                         $extra['avatar'] = get_avatar_url($user->ID);

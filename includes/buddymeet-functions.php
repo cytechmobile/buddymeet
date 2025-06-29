@@ -301,19 +301,24 @@ function buddymeet_render_jitsi_meet($room = null, $subject = null){
     }
 
     global $bp;
-    $group_id = $bp->groups->current_group->id;
+    $group_id = bp_get_current_group_id();
 
     if(is_null($room)){
         $room = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_room', true);
     }
 
     if(is_null($subject)){
-        $group_name = esc_js($bp->groups->current_group->name);
-        $subject = $group_name;
+        $current_group = groups_get_current_group();
+        if ( $current_group ) {
+            $subject = esc_js($current_group->name);
+        }
     }
 
-    $user_name = esc_js($bp->loggedin_user->userdata->display_name);
-    $avatar_url = esc_js(get_avatar_url($bp->loggedin_user->userdata->ID));
+    $user = $bp->loggedin_user->userdata;
+    $user_id = esc_js($user->ID);
+    $user_name = esc_js($user->display_name);
+    $user_email = esc_js($user->user_email);
+    $avatar_url = esc_js(get_avatar_url($user_id));
 
     //apply group settings
     $password = buddymeet_groups_get_groupmeta( $group_id, 'buddymeet_password', true);
@@ -337,6 +342,8 @@ function buddymeet_render_jitsi_meet($room = null, $subject = null){
             room = "' . $room . '" 
             subject = "' . $subject . '"
             user = "' . $user_name . '"
+            user_id = "' . $user_id . '"
+            email = "' . $user_email . '"
             avatar = "' . $avatar_url . '"
             password = "' . $password . '"
             domain = "' . $domain . '"
@@ -370,4 +377,14 @@ function buddymeet_generate_unique_room() {
         mt_rand( 0, 0xffff ),
         mt_rand( 0, 0xffff )
     );
+}
+
+function buddymeet_get_group_url($group) {
+    if ( function_exists( 'bp_get_group_url' ) ) {
+        $group_link = bp_get_group_url( $group );
+    } else {
+        // Fallback to deprecated function for older BP versions
+        $group_link = buddymeet_get_group_url( $group );
+    }
+    return $group_link;
 }
