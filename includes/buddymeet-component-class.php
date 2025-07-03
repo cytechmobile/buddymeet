@@ -98,7 +98,7 @@ class BuddyMeet_Component extends BP_Component {
 
         if ( bp_is_groups_component() && bp_is_single_item() ) {
             $group = ($groups_template !== null && $groups_template->group) ? $groups_template->group : groups_get_current_group();
-            $group_link = bp_get_group_permalink( $group );
+            $group_link = buddymeet_get_group_url( $group );
             $slug = buddymeet_get_slug();
             $budddymeet_link = trailingslashit($group_link . $slug);
 
@@ -233,13 +233,13 @@ class BuddyMeet_Component extends BP_Component {
                 }
 
                 $group = groups_get_group( $group_id );
-                $group_link = bp_get_group_permalink( $group );
+                $group_link = buddymeet_get_group_url( $group );
                 $meet_link = $group_link . buddymeet_get_slug() . '/members/' . $room;
 
                 $args = array(
                     'tokens' => array(
                         'group'          => $group,
-                        'group.url'      => bp_get_group_permalink( $group ),
+                        'group.url'      => buddymeet_get_group_url( $group ),
                         'group.name'     => $group->name,
                         'inviter.name'   => bp_core_get_userlink($requesting_user_id, true, false),
                         'inviter.url'    => bp_core_get_user_domain( $requesting_user_id ),
@@ -271,7 +271,7 @@ class BuddyMeet_Component extends BP_Component {
         $this->remove_users_from_room($group_id, array($user_id), $room);
 
         $group = groups_get_group( $group_id );
-        $group_link = bp_get_group_permalink( $group );
+        $group_link = buddymeet_get_group_url( $group );
         $meet_link = $group_link  . 'buddymeet/members/';
         $return = array('redirect' => $meet_link);
 
@@ -296,7 +296,7 @@ class BuddyMeet_Component extends BP_Component {
                     $text = sprintf( __( '%s: User %s sent you a meet request', 'buddymeet' ), $group->name, $user_fullname );
                 }
 
-                $group_link = bp_get_group_permalink( $group );
+                $group_link = buddymeet_get_group_url( $group );
 
                 $notification_link = $group_link . buddymeet_get_slug() . '/members/' . $room;
 

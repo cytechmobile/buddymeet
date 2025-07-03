@@ -6,7 +6,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( class_exists( 'BP_Group_Extension' ) ) :
+if ( class_exists( 'BP_Group_Extension' )  && bp_is_active( 'groups' )) :
 
 /**
  * The BuddyMeet group class
@@ -33,11 +33,10 @@ class BuddyMeet_Group extends BP_Group_Extension {
     }
 
     function show_tab($group_id = null) {
-        global $bp;
-        if (!$group_id) {
-            $group_id = $bp->groups->current_group->id;
-        }
         $show_tab = 'noone';
+        if ( ! $group_id ) {
+            $group_id = bp_get_current_group_id();
+        }
         if ($group_id && buddymeet_is_enabled($group_id)) {
             $show_tab = 'anyone';
         }
@@ -45,14 +44,13 @@ class BuddyMeet_Group extends BP_Group_Extension {
     }
 
     function create_screen( $group_id = null) {
-        global $bp;
-
         if ( ! $group_id ) {
-            $group_id = $bp->groups->current_group->id;
+            $group_id = bp_get_current_group_id();
         }
 
-        if ( !bp_is_group_creation_step( $this->slug ) )
+        if (!bp_is_group_creation_step( $this->slug ) ) {
             return false;
+        }
 
         wp_nonce_field( 'groups_create_save_' . $this->slug );
 
@@ -60,10 +58,8 @@ class BuddyMeet_Group extends BP_Group_Extension {
     }
 
     function create_screen_save($group_id = null) {
-        global $bp;
-
         if ( ! $group_id ) {
-            $group_id = $bp->groups->current_group->id;
+            $group_id = bp_get_current_group_id();
         }
 
         check_admin_referer( 'groups_create_save_' . $this->slug );
@@ -72,17 +68,17 @@ class BuddyMeet_Group extends BP_Group_Extension {
     }
 
     function edit_screen( $group_id = null ) {
-        global $bp;
-
-        if ( !groups_is_user_admin( $bp->loggedin_user->id, $bp->groups->current_group->id ) && ! current_user_can( 'bp_moderate' ) ) {
+       if (! bp_is_group_admin_screen( $this->slug ) ) {
             return false;
         }
 
-        if ( !bp_is_group_admin_screen( $this->slug ) )
-            return false;
-
         if (!$group_id){
-            $group_id = $bp->groups->current_group->id;
+            $group_id = bp_get_current_group_id();
+        }
+
+        // Permission check.
+        if (! groups_is_user_admin( bp_loggedin_user_id(), $group_id ) && ! current_user_can( 'bp_moderate' ) ) {
+            return false;
         }
 
         wp_nonce_field( 'groups_edit_save_' . $this->slug );
@@ -90,41 +86,45 @@ class BuddyMeet_Group extends BP_Group_Extension {
         $this->render_settings($group_id, false);
         ?>
 
-        <input type="submit" name="save" value="Save" />
+        <p><input type="submit" name="save" value="<?php esc_attr_e( 'Save Settings', $this->slug );?>" /></p>
         <?php
     }
 
     function edit_screen_save( $group_id = null ) {
-        global $bp;
-
-        $do_save = isset($_POST['save'] ) ? sanitize_text_field($_POST['save'])  === "true": false;
-        if ($do_save) {
+        $save = sanitize_text_field($_POST['save']);
+        if ($save == null)
             return false;
-        }
 
         if ( !$group_id ) {
-            $group_id = $bp->groups->current_group->id;
+            $group_id = bp_get_current_group_id();
         }
 
         check_admin_referer( 'groups_edit_save_' . $this->slug );
 
         $this->persist_settings($group_id);
 
-        bp_core_add_message( __( 'Settings saved successfully', 'buddypress' ) );
+        bp_core_add_message( esc_html__( 'Settings saved successfully', $this->slug ) );
 
-        bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) . 'admin/' . $this->slug );
+        $group = groups_get_group( $group_id );
+        if ( $group ) {
+            bp_core_redirect( buddymeet_get_group_url( $group ). 'admin/'. $this->slug );
+        }
     }
 
     function display( $group_id = null ) {
-        global $bp;
-
-        if (!$group_id) {
-            $group_id = $bp->groups->current_group->id;
+        if (! $group_id ) {
+            $group_id = bp_get_current_group_id();
         }
 
-        if ( groups_is_user_member( $bp->loggedin_user->id, $group_id )
-            || groups_is_user_mod( $bp->loggedin_user->id, $group_id )
-            || groups_is_user_admin( $bp->loggedin_user->id, $group_id )
+        if (! $group_id ) {
+            // Should not happen if nav item is displayed, but as a safeguard.
+            return;
+        }
+
+        // Check membership status.
+        if ( groups_is_user_member( bp_loggedin_user_id(), $group_id )
+            || groups_is_user_mod( bp_loggedin_user_id(), $group_id )
+            || groups_is_user_admin( bp_loggedin_user_id(), $group_id )
             || is_super_admin() ) {
 
             $enabled = buddymeet_is_enabled($group_id);

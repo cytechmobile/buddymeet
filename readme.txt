@@ -2,9 +2,9 @@
 Contributors: cytechltd
 Tags: BuddyMeet, jitsi, video, conference, buddypress
 Requires at least: 4.5
-Tested up to: 6.5.2
+Tested up to: 6.8.1
 Requires PHP: 5.3
-Stable tag: 2.5.0
+Stable tag: 2.6.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -18,6 +18,7 @@ BuddyMeet is a BuddyPress (2.5+) plugin that uses [Jitsi Meet](https://jitsi.org
 * On demand rooms among specific invited group members
 * Automatic customization of the room's subject and  the name/avatar of the participants
 * Customization of all the parameters that [Jitsi Meet API](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe) supports
+* Support for RS256-signed JWT authentication. This enables secure connections to [8x8 JaaS](https://jaas.8x8.vc) (8x8.vc domain) and self-hosted Jitsi servers using RSA SHA-256 verified tokens.
 
 Moreover, you can use the shortcode [buddymeet room=ROOM_HERE subject=SUBJECT_HERE] to add a conference room to any WordPress page. In that case, you have to pass any configuration by using the following shortcode parameters:
 
@@ -100,6 +101,26 @@ Please ensure that you have followed all instructions to properly setup BuddyPre
 
 Please note that this setting can only be used if you have set up your own Jitsi Meet server installation.
 
+= How do I connect to the official 8x8.vc domain? =
+The official 8x8 JaaS service requires RS256-signed JWT authentication. To connect:
+1. Create an account at [https://jaas.8x8.vc](https://jaas.8x8.vc)
+2. Generate an API key using their dashboard
+3. Enter the generated App ID, API Key ID, and Private Key in the plugin's administration settings:
+
+= How do I connect to a self-hosted Jitsi server using JWT authentication? =
+Before you start, ensure JWT authentication is already enabled and configured on your Jitsi server.
+
+Configure the following information in the plugin's administration settings:
+1. **Private Key**: Enter your JWT signing key
+2. **App ID**: Any value (populates the `sub` claim)
+3. **API Key ID**: Any value (populates the `kid` claim)
+
+Your Jitsi server must accept tokens with these specific claims:
+```json
+"aud": "jitsi",
+"iss": "chat"
+```
+
 == Screenshots ==
 
 1. BuddyMeet settings page
@@ -110,9 +131,14 @@ Please note that this setting can only be used if you have set up your own Jitsi
 6. Accept a meet invitation
 7. Enter the room you was invited into
 8. Switch among different rooms you have been invited into
-9. Set the default Jitsi domain via the administration menu
+9. Set the default Jitsi domain in the administration menu
+10. Generate an API key on 8x8.vc following their documentation
+11. Configure your App ID, API Key ID, and private key via the administration menu
 
 == Changelog ==
+
+= 2.6.0 =
+* Added support for RS256-signed JWT authentication. This enables secure connections to 8x8 JaaS (8x8.vc) and self-hosted Jitsi servers using RSA SHA-256 verified tokens.
 
 = 2.5.0 =
 * Removed the client disposal logic upon receiving the videoConferenceLeft event because this event is triggered when starting the login flow.

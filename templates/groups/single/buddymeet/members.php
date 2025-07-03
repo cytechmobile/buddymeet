@@ -16,7 +16,7 @@ do_action( 'bp_before_group_meet_member_content' ) ?>
     <?php wp_nonce_field( 'buddymeet_members_delete_room', '_wpnonce_members_delete_room' ) ?>
 
     <label for="room_name"><?php esc_html_e( 'Room Name', 'buddymeet' ); ?></label>
-    <input type="text" name="room_name" id="room_name" value="<?php esc_attr_e($room['name']) ?>"/>
+    <input type="text" name="room_name" id="room_name" value="<?php esc_attr_e($room ? $room['name'] : '') ?>"/>
 
     <label for="send-to-input"><?php esc_html_e( 'Search for members to invite in the room', 'buddymeet' ); ?></label>
     <input type="text" name="send-to-input" class="send-to-input" id="send-to-input" />
